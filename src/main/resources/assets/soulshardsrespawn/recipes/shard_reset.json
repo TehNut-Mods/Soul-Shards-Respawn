@@ -1,0 +1,13 @@
+{
+  "result": {
+    "item": "soulshardsrespawn:soul_shard",
+    "data": 0
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "soulshardsrespawn:soul_shard",
+      "data": 0
+    }
+  ]
+}

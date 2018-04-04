@@ -1,0 +1,16 @@
+[
+{
+  "modid": "soulshardsrespawn",
+  "name": "Soul Shards Respawn",
+  "description": "Custom spawners for any mob!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [ "TehNut" ],
+  "credits": "ShadwDrgn, Moze_Intel, Nenivar, RetiredNavyVet, TeamWhammich, BBoldt",
+  "logoFile": "/logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]

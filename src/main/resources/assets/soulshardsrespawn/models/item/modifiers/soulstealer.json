@@ -1,0 +1,12 @@
+{
+  "textures": {
+    "battleaxe": "soulshardsrespawn:items/modifiers/soulStealer_battleaxe",
+    "broadsword": "soulshardsrespawn:items/modifiers/soulStealer_broadsword",
+    "rapier": "soulshardsrespawn:items/modifiers/soulStealer_rapier",
+    "cleaver": "soulshardsrespawn:items/modifiers/soulStealer_cleaver",
+    "frypan": "soulshardsrespawn:items/modifiers/soulStealer_frypan",
+    "hammer": "soulshardsrespawn:items/modifiers/soulStealer_hammer",
+    "hatchet": "soulshardsrespawn:items/modifiers/soulStealer_hatchet",
+    "longsword": "soulshardsrespawn:items/modifiers/soulStealer_longsword"
+  }
+}

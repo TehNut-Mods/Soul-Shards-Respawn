@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "soulshardsrespawn:materials",
+    "data": 1
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    {
+      "item": "#GEM_LAPIS"
+    },
+    {
+      "item": "#DUST_REDSTONE"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    }
+  ]
+}

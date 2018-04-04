@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": { },
+    "model": "cube_all"
+  },
+  "variants": {
+    "active": {
+      "true": {
+        "textures": {
+          "all": "soulshardsrespawn:blocks/soul_cage_powered"
+        }
+      },
+      "false": {
+        "textures": {
+          "all": "soulshardsrespawn:blocks/soul_cage_unpowered"
+        }
+      }
+    },
+    "powered": {
+      "true": {},
+      "false": {}
+    }
+  }
+}
