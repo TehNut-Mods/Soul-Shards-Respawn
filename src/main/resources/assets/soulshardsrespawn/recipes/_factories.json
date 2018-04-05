@@ -1,0 +1,5 @@
+{
+  "conditions": {
+    "reset_enabled": "info.tehnut.soulshardsrespawn.core.util.ConditionResetEnabled"
+  }
+}

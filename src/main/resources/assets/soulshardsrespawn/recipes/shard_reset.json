@@ -1,4 +1,7 @@
 {
+  "conditions": [
+    { "type": "soulshardsrespawn:reset_enabled" }
+  ],
   "result": {
     "item": "soulshardsrespawn:soul_shard",
     "data": 0
