@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.Random;
 
 public class BlockSoulCage extends Block {
@@ -42,11 +43,11 @@ public class BlockSoulCage extends Block {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
-        if (cage == null)
+        if (!player.isSneaking())
             return false;
 
-        if (!player.isSneaking())
+        TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
+        if (cage == null)
             return false;
 
         ItemStack stack = cage.inventory.extractItem(0, 1, false);
