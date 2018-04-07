@@ -38,10 +38,12 @@ repositories {
 }
 
 dependencies {
-    deobfProvided "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
     runtime "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    deobfProvided "mezz.jei:jei_1.12.2:${jei_version}:api"
-    runtime "mezz.jei:jei_1.12.2:${jei_version}"
+    deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
+    runtime "mezz.jei:jei_${mc_version}:${jei_version}"
+    deobfCompile "slimeknights:TConstruct:${tcon_version}"
+    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
 }
 
 minecraft {
