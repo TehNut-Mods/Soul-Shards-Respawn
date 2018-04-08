@@ -45,10 +45,12 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
         ActionResult<Binding> result = canSpawn();
         if (result.getType() != EnumActionResult.SUCCESS) {
             setState(false);
+            world.notifyNeighborsOfStateChange(pos, blockType, false);
             return;
         }
 
         setState(true);
+        world.notifyNeighborsOfStateChange(pos, blockType, false);
         activeTime++;
         IBlockState state = getWorld().getBlockState(getPos());
         getWorld().notifyBlockUpdate(getPos(), state, state, 3);

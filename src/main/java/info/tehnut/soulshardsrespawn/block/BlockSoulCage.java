@@ -1,6 +1,8 @@
 package info.tehnut.soulshardsrespawn.block;
 
 import info.tehnut.soulshardsrespawn.SoulShards;
+import info.tehnut.soulshardsrespawn.core.data.Binding;
+import info.tehnut.soulshardsrespawn.core.data.Tier;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -87,6 +89,24 @@ public class BlockSoulCage extends Block {
             InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), cage.inventory.getStackInSlot(0));
 
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
+        TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
+        if (cage == null)
+            return 0;
+
+        Binding binding = cage.getBinding();
+        if (binding == null)
+            return 0;
+
+        return (int) (((double) binding.getTier().getIndex() / ((double) Tier.INDEXED.size() - 1)) * 15D);
     }
 
     @Override
