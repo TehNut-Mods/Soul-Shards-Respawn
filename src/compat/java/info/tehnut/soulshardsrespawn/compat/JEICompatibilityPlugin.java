@@ -1,4 +1,4 @@
-package info.tehnut.soulshardsrespawn.compat.jei;
+package info.tehnut.soulshardsrespawn.compat;
 
 import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.core.RegistrarSoulShards;
@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
 
 @JEIPlugin
-public class SoulShardsJEIPlugin implements IModPlugin {
+public class JEICompatibilityPlugin implements IModPlugin {
 
     @Override
     public void register(IModRegistry registry) {

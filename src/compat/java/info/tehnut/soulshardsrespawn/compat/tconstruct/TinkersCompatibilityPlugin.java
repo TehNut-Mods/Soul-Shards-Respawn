@@ -25,7 +25,7 @@ import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 
 @CompatibilityPlugin("tconstruct")
-public class SoulShardsTConstructPlugin implements ICompatibilityPlugin {
+public class TinkersCompatibilityPlugin implements ICompatibilityPlugin {
 
     public static final Modifier MOD_SOUL_STEALER = new ModifierSoulStealer();
     public static final ITrait TRAIT_VILE = new TraitVile();

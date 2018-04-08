@@ -7,7 +7,7 @@ import mcp.mobius.waila.api.WailaPlugin;
 import net.minecraft.entity.EntityLivingBase;
 
 @WailaPlugin
-public class SoulShardsHwylaPlugin implements IWailaPlugin {
+public class HwylaCompatibilityPlugin implements IWailaPlugin {
 
     @Override
     public void register(IWailaRegistrar registrar) {
