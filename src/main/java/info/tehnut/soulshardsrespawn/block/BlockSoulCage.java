@@ -18,6 +18,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -89,6 +90,11 @@ public class BlockSoulCage extends Block {
             InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), cage.inventory.getStackInSlot(0));
 
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable EnumFacing side) {
+        return true;
     }
 
     @Override
