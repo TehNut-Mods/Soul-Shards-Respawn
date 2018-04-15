@@ -83,6 +83,9 @@ public class ItemSoulShard extends Item {
                 e.printStackTrace();
             }
         } else if (state.getBlock() == RegistrarSoulShards.SOUL_CAGE) {
+            if (binding.getBoundEntity() == null)
+                return EnumActionResult.FAIL;
+
             TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
             if (cage == null)
                 return EnumActionResult.PASS;
