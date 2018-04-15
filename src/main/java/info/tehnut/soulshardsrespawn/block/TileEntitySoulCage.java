@@ -1,6 +1,7 @@
 package info.tehnut.soulshardsrespawn.block;
 
 import info.tehnut.soulshardsrespawn.SoulShards;
+import info.tehnut.soulshardsrespawn.api.CageSpawnEvent;
 import info.tehnut.soulshardsrespawn.core.RegistrarSoulShards;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.item.ItemSoulShard;
@@ -20,6 +21,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -89,7 +91,10 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
                     if (!SoulShards.config.allowBossSpawns() && !entityLiving.isNonBoss())
                         continue;
 
-                    // TODO Add CageSpawnEvent to API
+                    CageSpawnEvent event = new CageSpawnEvent(binding, inventory.getStackInSlot(0), entityLiving);
+                    if (MinecraftForge.EVENT_BUS.post(event))
+                        continue;
+
                     getWorld().spawnEntity(entityLiving);
                     entityLiving.onInitialSpawn(getWorld().getDifficultyForLocation(spawnAt), null);
                     break;

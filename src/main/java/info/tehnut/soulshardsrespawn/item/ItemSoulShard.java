@@ -1,6 +1,7 @@
 package info.tehnut.soulshardsrespawn.item;
 
 import info.tehnut.soulshardsrespawn.SoulShards;
+import info.tehnut.soulshardsrespawn.api.ISoulShard;
 import info.tehnut.soulshardsrespawn.block.TileEntitySoulCage;
 import info.tehnut.soulshardsrespawn.core.RegistrarSoulShards;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
@@ -33,7 +34,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class ItemSoulShard extends Item {
+public class ItemSoulShard extends Item implements ISoulShard {
 
     private static final Method GET_ENTITY_ID_METHOD;
 
@@ -187,6 +188,7 @@ public class ItemSoulShard extends Item {
     }
 
     @Nullable
+    @Override
     public Binding getBinding(ItemStack stack) {
         return Binding.fromNBT(stack);
     }

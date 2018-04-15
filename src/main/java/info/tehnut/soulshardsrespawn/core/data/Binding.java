@@ -1,5 +1,7 @@
 package info.tehnut.soulshardsrespawn.core.data;
 
+import info.tehnut.soulshardsrespawn.api.IBinding;
+import info.tehnut.soulshardsrespawn.api.IShardTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -8,7 +10,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Binding implements INBTSerializable<NBTTagCompound> {
+public class Binding implements IBinding, INBTSerializable<NBTTagCompound> {
 
     @Nullable
     private ResourceLocation boundEntity;
@@ -31,6 +33,7 @@ public class Binding implements INBTSerializable<NBTTagCompound> {
     }
 
     @Nullable
+    @Override
     public ResourceLocation getBoundEntity() {
         return boundEntity;
     }
@@ -41,6 +44,7 @@ public class Binding implements INBTSerializable<NBTTagCompound> {
     }
 
     @Nullable
+    @Override
     public UUID getOwner() {
         return owner;
     }
@@ -50,6 +54,7 @@ public class Binding implements INBTSerializable<NBTTagCompound> {
         return this;
     }
 
+    @Override
     public int getKills() {
         return kills;
     }
@@ -59,12 +64,14 @@ public class Binding implements INBTSerializable<NBTTagCompound> {
         return this;
     }
 
+    @Override
     public Binding addKills(int kills) {
         this.kills = Math.min(Tier.maxKills, this.kills + kills);
         return this;
     }
 
-    public Tier getTier() {
+    @Override
+    public IShardTier getTier() {
         return Tier.TIERS.floorEntry(kills).getValue();
     }
 

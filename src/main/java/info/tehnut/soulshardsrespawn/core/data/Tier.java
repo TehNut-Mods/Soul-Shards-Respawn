@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.reflect.TypeToken;
 import info.tehnut.soulshardsrespawn.SoulShards;
+import info.tehnut.soulshardsrespawn.api.IShardTier;
 import info.tehnut.soulshardsrespawn.core.util.JsonUtil;
 import net.minecraftforge.fml.common.Loader;
 
@@ -11,7 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.TreeMap;
 
-public class Tier {
+public class Tier implements IShardTier {
 
     public static final TreeMap<Integer, Tier> TIERS = Maps.newTreeMap();
     public static final List<Tier> INDEXED = Lists.newArrayList();
@@ -39,30 +40,37 @@ public class Tier {
         this.cooldown = cooldown;
     }
 
+    @Override
     public int getKillRequirement() {
         return killRequirement;
     }
 
+    @Override
     public boolean checkPlayer() {
         return checkPlayer;
     }
 
+    @Override
     public boolean checkLight() {
         return checkLight;
     }
 
+    @Override
     public boolean checkRedstone() {
         return checkRedstone;
     }
 
+    @Override
     public int getSpawnAmount() {
         return spawnAmount;
     }
 
+    @Override
     public int getCooldown() {
         return cooldown;
     }
 
+    @Override
     public int getIndex() {
         return INDEXED.indexOf(this);
     }
