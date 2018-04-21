@@ -1,4 +1,19 @@
 ------------------------------------------------------
+Version 1.0.1
+------------------------------------------------------
+
+- Minor optimization in cage interaction handling
+- Respect shard reset recipe config
+- Implemented Tinker's Construct compatibility
+    - 16 Corrupted Ingots can be used to obtain the Soul Stealer modifier on Tinkers' weapons
+    - Corrupted parts
+        - Melt Corrupted Ingots in a Smeltery and cast them into the parts
+- Soul Cage will now output a comparator level based on it's contained tier divided by the total tiers available.
+    - For example, with the default config, a tier 3 shard will output a redstone signal of 9.
+- Fixed redstone not connecting to Soul Cages.
+- Fixed an issue where unbound shards could be placed into the Soul Cage.
+
+------------------------------------------------------
 Version 1.0.0
 ------------------------------------------------------
 
