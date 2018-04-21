@@ -50,6 +50,7 @@ modifier.soul_stealer.extra=Obtained Souls: +%s
 modifier.vile.name=Vile
 modifier.vile.desc=Adds an additional soul per kill to your Soul Shard
 material.corrupted.name=Corrupted
+fluid.soulshardsrespawn.corrupted.name=Molten Corruption
 
 # Wawla
 enchantment.soulshardsrespawn.soul_stealer.desc=Increases the souls collected per kill by one per level.
