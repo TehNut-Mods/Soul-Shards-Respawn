@@ -106,7 +106,7 @@ public class Tier implements IShardTier {
                 new Tier(64, true, true, false, 2, 20 * 20),
                 new Tier(128, true, true, false, 4, 10 * 20),
                 new Tier(256, false, true, false, 4, 5 * 20),
-                new Tier(512, false, true, false, 4, 5 * 20),
+                new Tier(512, false, false, false, 4, 5 * 20),
                 new Tier(1024, false, false, true, 6, 2 * 20)
         };
     }
