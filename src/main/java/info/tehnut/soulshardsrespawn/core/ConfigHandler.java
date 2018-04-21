@@ -42,6 +42,7 @@ public class ConfigHandler {
     private boolean countCageBornForShard;
     private boolean addShardResetRecipe;
     private boolean allowShardCombination;
+    private boolean allowFakePlayers;
     private MultiblockPattern multiblockPattern;
 
     // Server
@@ -70,6 +71,7 @@ public class ConfigHandler {
         countCageBornForShard = config.getBoolean("countCageBornForShard", "balance", false, "Mobs spawned via the cage should count toward shard kills.");
         addShardResetRecipe = config.getBoolean("addShardResetRecipe", "balance", true, "Adds a shapeless recipe that allows shards to be reset fresh.");
         allowShardCombination = config.getBoolean("allowShardCombination", "balance", true, "Allows shards of the same entity to be combined in an anvil for a direct kill addition.");
+        allowFakePlayers = config.getBoolean("allowFakePlayers", "balance", false, "Allows fake players to grow Shards in their inventories.");
 
         // Server
         requireOwnerOnline = config.getBoolean("requireOwnerOnline", "server", false, "Requires the shard owner to be online. The owner is the first person to obtain a kill with the shard.");
@@ -151,6 +153,10 @@ public class ConfigHandler {
 
     public boolean allowShardCombination() {
         return allowShardCombination;
+    }
+
+    public boolean allowFakePlayers() {
+        return allowFakePlayers;
     }
 
     public MultiblockPattern getMultiblockPattern() {

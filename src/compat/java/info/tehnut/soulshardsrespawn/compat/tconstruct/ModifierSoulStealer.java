@@ -1,6 +1,7 @@
 package info.tehnut.soulshardsrespawn.compat.tconstruct;
 
 import com.google.common.collect.ImmutableList;
+import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.core.EventHandler;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.item.ItemSoulShard;
@@ -10,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.FakePlayer;
 import slimeknights.tconstruct.library.Util;
 import slimeknights.tconstruct.library.modifiers.ModifierAspect;
 import slimeknights.tconstruct.library.modifiers.ModifierNBT;
@@ -29,6 +31,9 @@ public class ModifierSoulStealer extends ModifierTrait {
     @Override
     public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt, boolean wasCritical, boolean wasHit) {
         if (!(player instanceof EntityPlayer))
+            return;
+
+        if (!SoulShards.config.allowFakePlayers() && player instanceof FakePlayer)
             return;
 
         if (wasHit && target.getHealth() <= 0.01) {

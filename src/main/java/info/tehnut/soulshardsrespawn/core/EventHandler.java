@@ -36,6 +36,9 @@ public class EventHandler {
         if (event.getEntityLiving() instanceof EntityPlayer)
             return;
 
+        if (!SoulShards.config.allowFakePlayers() && event.getSource().getTrueSource() instanceof FakePlayer)
+            return;
+
         if (!SoulShards.config.isEntityEnabled(event.getEntityLiving().getClass()))
             return;
 
