@@ -23,6 +23,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
@@ -104,6 +105,9 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
     }
 
     private ActionResult<Binding> canSpawn() {
+        if (!FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getGameRules().getBoolean("allowCageSpawns"))
+            return ActionResult.newResult(EnumActionResult.FAIL, null);
+
         IBlockState state = world.getBlockState(pos);
         if (state.getBlock() != RegistrarSoulShards.SOUL_CAGE)
             return ActionResult.newResult(EnumActionResult.FAIL, null);

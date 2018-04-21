@@ -11,11 +11,10 @@ import info.tehnut.soulshardsrespawn.core.util.compat.ICompatibilityPlugin;
 import info.tehnut.soulshardsrespawn.item.ItemSoulShard;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.GameRules;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,5 +69,10 @@ public class SoulShards {
     @Mod.EventHandler
     public void serverStart(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandSoulShards());
+    }
+
+    @Mod.EventHandler
+    public void serverStarted(FMLServerStartedEvent event) {
+        FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getGameRules().addGameRule("allowCageSpawns", "true", GameRules.ValueType.BOOLEAN_VALUE);
     }
 }
