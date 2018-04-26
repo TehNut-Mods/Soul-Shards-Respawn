@@ -1,4 +1,17 @@
 ------------------------------------------------------
+Version 1.0.2
+------------------------------------------------------
+
+- Add a config to allow fake players to upgrade shards.
+    - Disabled by default, obviously.
+- Slight buff to tier 4.
+    - It was exactly the same as tier 3 :OMEGALUL:
+- Add a gamerule to globally disable cage spawns.
+    - For server admins trying to delag their server.
+    - /gamerule allowCageSpawns
+- Fixed the entity list config not saving.
+
+------------------------------------------------------
 Version 1.0.1
 ------------------------------------------------------
 
