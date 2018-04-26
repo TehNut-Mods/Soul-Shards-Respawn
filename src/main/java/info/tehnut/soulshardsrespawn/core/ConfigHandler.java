@@ -64,7 +64,7 @@ public class ConfigHandler {
     public void syncConfig() {
         // Balance
         spawnCap = config.getInt("spawnCap", "balance", 30, 0, 256, "The maximum amount of cage born mobs that a cage can have in a 16 block radius before shutting off.");
-        allowBossSpawns = config.getBoolean("allowBossSpawns", "balance", false, "Allows boss mobs to be spawned by cages.");
+        allowBossSpawns = config.getBoolean("allowBossSpawns", "balance", false, "Allows boss mobs to be spawned by cages. Some bosses (like the Ender Dragon) have custom logic which causes them to not work properly when spawned.");
         allowSpawnerAbsorption = config.getBoolean("allowSpawnerAbsorption", "balance", true, "Allow shards to absorb Mob Spawners of the same entity type.");
         absorptionBonus = config.getInt("absorptionBonus", "balance", 200, 0, Integer.MAX_VALUE, "The amount of souls to absorb from Mob Spawners.");
         dropExperience = config.getBoolean("dropExperience", "balance", true, "Mobs spawned via the cage will drop experience.");
@@ -91,6 +91,9 @@ public class ConfigHandler {
                 .stream()
                 .filter(e -> EntityLivingBase.class.isAssignableFrom(e.getValue().getEntityClass()))
                 .forEach(e -> entityMap.put(e.getKey(), config.getBoolean(e.getKey().toString(), "entity_list", !DEFAULT_DISABLES.contains(e.getKey().toString()), "Allows the gathering and spawning of " + e.getValue().getName())));
+
+        config.addCustomCategoryComment("entity_list", "Enabling boss mobs is not supported. If they work, great. If not, oh well.");
+        config.save();
     }
 
     public void syncMultiblock() {
