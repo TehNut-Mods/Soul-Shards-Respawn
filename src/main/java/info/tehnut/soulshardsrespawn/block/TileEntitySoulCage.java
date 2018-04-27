@@ -222,7 +222,8 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
 
     public boolean ownerOnline() {
         Binding binding = getBinding();
-        return binding != null && binding.getOwner() != null && getWorld().getPlayerEntityByUUID(binding.getOwner()) == null;
+        //noinspection ConstantConditions
+        return binding != null && binding.getOwner() != null && FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(binding.getOwner()) == null;
     }
 
     public static class SoulCageInventory extends ItemStackHandler {
