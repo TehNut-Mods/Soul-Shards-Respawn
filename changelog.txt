@@ -1,4 +1,12 @@
 ------------------------------------------------------
+Version 1.0.3
+------------------------------------------------------
+
+- Fixed lighting check when spawning hostile mobs.
+- ~~Fixed~~ Added check for whether a player is in range.
+- Fixed cages shutting off if their owner left the dimension while `requireOwnerOnline` was true.
+
+------------------------------------------------------
 Version 1.0.2
 ------------------------------------------------------
 
