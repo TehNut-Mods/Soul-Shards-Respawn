@@ -80,7 +80,7 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
                 if (entityLiving == null)
                     continue;
 
-                if (binding.getTier().checkLight() && !canSpawnInLight(entityLiving, entityLiving.getPosition()))
+                if (binding.getTier().checkLight() && !canSpawnInLight(entityLiving, spawnAt))
                     continue;
 
                 entityLiving.setLocationAndAngles(spawnAt.getX(), spawnAt.getY(), spawnAt.getZ(), MathHelper.wrapDegrees(getWorld().rand.nextFloat() * 360F), 0F);
@@ -133,6 +133,9 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
             if (state.getValue(BlockSoulCage.POWERED) && binding.getTier().checkRedstone())
                 return ActionResult.newResult(EnumActionResult.FAIL, binding);
         } else if (!state.getValue(BlockSoulCage.POWERED))
+            return ActionResult.newResult(EnumActionResult.FAIL, binding);
+
+        if (binding.getTier().checkPlayer() && getWorld().getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), 16, false) == null)
             return ActionResult.newResult(EnumActionResult.FAIL, binding);
 
         return ActionResult.newResult(EnumActionResult.SUCCESS, binding);
