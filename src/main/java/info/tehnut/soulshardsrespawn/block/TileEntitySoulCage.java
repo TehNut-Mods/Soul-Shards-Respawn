@@ -45,6 +45,9 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
 
     @Override
     public void update() {
+        if (getWorld().isRemote)
+            return;
+
         ActionResult<Binding> result = canSpawn();
         if (result.getType() != EnumActionResult.SUCCESS) {
             setState(false);
@@ -58,7 +61,7 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
         IBlockState state = getWorld().getBlockState(getPos());
         getWorld().notifyBlockUpdate(getPos(), state, state, 3);
 
-        if (!world.isRemote && activeTime % result.getResult().getTier().getCooldown() == 0)
+        if (activeTime % result.getResult().getTier().getCooldown() == 0)
             spawnEntities();
     }
 
