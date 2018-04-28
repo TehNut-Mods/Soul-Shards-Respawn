@@ -61,7 +61,7 @@ public class CommandSetShardEntity extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args, SoulShards.config.getEntityMap().entrySet()
+            return getListOfStringsMatchingLastWord(args, SoulShards.CONFIG.getEntityMap().entrySet()
                     .stream()
                     .filter(Map.Entry::getValue)
                     .map(e -> e.getKey().toString())

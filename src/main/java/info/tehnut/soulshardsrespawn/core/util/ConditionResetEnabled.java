@@ -11,6 +11,6 @@ public class ConditionResetEnabled implements IConditionFactory {
 
     @Override
     public BooleanSupplier parse(JsonContext context, JsonObject json) {
-        return () -> SoulShards.config.addShardResetRecipe();
+        return () -> SoulShards.CONFIG.addShardResetRecipe();
     }
 }

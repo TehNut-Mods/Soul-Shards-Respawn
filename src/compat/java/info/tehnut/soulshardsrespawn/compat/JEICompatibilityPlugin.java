@@ -16,7 +16,7 @@ public class JEICompatibilityPlugin implements IModPlugin {
         registry.addIngredientInfo(
                 new ItemStack(RegistrarSoulShards.SOUL_SHARD),
                 ItemStack.class,
-                I18n.translateToLocalFormatted("jei.soulshardsrespawn.soul_shard.desc", SoulShards.config.getMultiblockPattern().getCatalyst().getDisplayName())
+                I18n.translateToLocalFormatted("jei.soulshardsrespawn.soul_shard.desc", SoulShards.CONFIG.getMultiblockPattern().getCatalyst().getDisplayName())
         );
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +29,7 @@ public class SoulShards {
     public static final String NAME = "Soul Shards Respawn";
     public static final String VERSION = "@VERSION@";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
+    public static final ConfigHandler CONFIG = new ConfigHandler(new File(Loader.instance().getConfigDir(), MODID));
     public static final Set<ICompatibilityPlugin> COMPAT_PLUGINS = Sets.newHashSet();
     public static final CreativeTabs TAB_SS = new CreativeTabs(MODID) {
         @Override
@@ -39,13 +41,10 @@ public class SoulShards {
         }
     };
 
-    public static ConfigHandler config;
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         COMPAT_PLUGINS.addAll(CompatibilityPlugin.Gather.gather(event.getAsmData()));
-        config = new ConfigHandler(new File(event.getModConfigurationDirectory(), MODID));
-        config.syncConfig();
+        CONFIG.syncConfig();
 
         for (ICompatibilityPlugin plugin : COMPAT_PLUGINS)
             plugin.preInit();
@@ -53,8 +52,8 @@ public class SoulShards {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        config.syncEntityList();
-        config.syncMultiblock();
+        CONFIG.syncEntityList();
+        CONFIG.syncMultiblock();
 
         for (ICompatibilityPlugin plugin : COMPAT_PLUGINS)
             plugin.init();

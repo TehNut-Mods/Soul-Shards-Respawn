@@ -92,7 +92,7 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
                 entityLiving.enablePersistence();
 
                 if (entityLiving.isNotColliding() && !entityLiving.isDead && !hasReachedSpawnCap(entityLiving)) {
-                    if (!SoulShards.config.allowBossSpawns() && !entityLiving.isNonBoss())
+                    if (!SoulShards.CONFIG.allowBossSpawns() && !entityLiving.isNonBoss())
                         continue;
 
                     CageSpawnEvent event = new CageSpawnEvent(binding, inventory.getStackInSlot(0), entityLiving);
@@ -126,13 +126,13 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
         if (binding.getTier().getSpawnAmount() == 0)
             return ActionResult.newResult(EnumActionResult.FAIL, binding);
 
-        if (SoulShards.config.requireOwnerOnline() && !ownerOnline())
+        if (SoulShards.CONFIG.requireOwnerOnline() && !ownerOnline())
             return ActionResult.newResult(EnumActionResult.FAIL, binding);
 
-        if (!SoulShards.config.isEntityEnabled(binding.getBoundEntity()))
+        if (!SoulShards.CONFIG.isEntityEnabled(binding.getBoundEntity()))
             return ActionResult.newResult(EnumActionResult.FAIL, binding);
 
-        if (!SoulShards.config.requireRedstoneSignal()) {
+        if (!SoulShards.CONFIG.requireRedstoneSignal()) {
             if (state.getValue(BlockSoulCage.POWERED) && binding.getTier().checkRedstone())
                 return ActionResult.newResult(EnumActionResult.FAIL, binding);
         } else if (!state.getValue(BlockSoulCage.POWERED))
@@ -152,7 +152,7 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
         AxisAlignedBB box = new AxisAlignedBB(getPos().getX() - 16, getPos().getY() - 16, getPos().getZ() - 16, getPos().getX() + 16, getPos().getY() + 16, getPos().getZ() + 16);
 
         int mobCount = getWorld().getEntitiesWithinAABB(living.getClass(), box, e -> e != null && e.getEntityData().getBoolean("cageBorn")).size();
-        return mobCount >= SoulShards.config.getSpawnCap();
+        return mobCount >= SoulShards.CONFIG.getSpawnCap();
     }
 
     public void setState(boolean active) {
@@ -242,7 +242,7 @@ public class TileEntitySoulCage extends TileEntity implements ITickable {
                 return stack;
 
             Binding binding = ((ItemSoulShard) stack.getItem()).getBinding(stack);
-            if (binding == null || binding.getBoundEntity() == null || !SoulShards.config.isEntityEnabled(binding.getBoundEntity()))
+            if (binding == null || binding.getBoundEntity() == null || !SoulShards.CONFIG.isEntityEnabled(binding.getBoundEntity()))
                 return stack;
 
             return super.insertItem(slot, stack, simulate);

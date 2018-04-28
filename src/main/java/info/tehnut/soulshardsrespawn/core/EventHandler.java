@@ -36,16 +36,16 @@ public class EventHandler {
         if (event.getEntityLiving() instanceof EntityPlayer)
             return;
 
-        if (!SoulShards.config.allowFakePlayers() && event.getSource().getTrueSource() instanceof FakePlayer)
+        if (!SoulShards.CONFIG.allowFakePlayers() && event.getSource().getTrueSource() instanceof FakePlayer)
             return;
 
-        if (!SoulShards.config.isEntityEnabled(event.getEntityLiving().getClass()))
+        if (!SoulShards.CONFIG.isEntityEnabled(event.getEntityLiving().getClass()))
             return;
 
-        if (!SoulShards.config.allowBossSpawns() && !event.getEntityLiving().isNonBoss())
+        if (!SoulShards.CONFIG.allowBossSpawns() && !event.getEntityLiving().isNonBoss())
             return;
 
-        if (!SoulShards.config.countCageBornForShard() && event.getEntityLiving().getEntityData().getBoolean("cageBorn"))
+        if (!SoulShards.CONFIG.countCageBornForShard() && event.getEntityLiving().getEntityData().getBoolean("cageBorn"))
             return;
 
         if (event.getSource().getTrueSource() instanceof EntityPlayer) {
@@ -91,7 +91,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onBlockInteract(PlayerInteractEvent.RightClickBlock event) {
-        MultiblockPattern pattern = SoulShards.config.getMultiblockPattern();
+        MultiblockPattern pattern = SoulShards.CONFIG.getMultiblockPattern();
         ItemStack held = event.getEntityPlayer().getHeldItem(event.getHand());
         if (!ItemStack.areItemsEqual(held, pattern.getCatalyst()))
             return;
@@ -113,7 +113,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onAnvil(AnvilUpdateEvent event) {
-        if (!SoulShards.config.allowShardCombination())
+        if (!SoulShards.CONFIG.allowShardCombination())
             return;
 
         if (event.getLeft().getItem() instanceof ItemSoulShard && event.getRight().getItem() instanceof ItemSoulShard) {
@@ -134,7 +134,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void dropExperience(LivingExperienceDropEvent event) {
-        if (!SoulShards.config.dropExperience() && event.getEntityLiving().getEntityData().getBoolean("cageBorn"))
+        if (!SoulShards.CONFIG.dropExperience() && event.getEntityLiving().getEntityData().getBoolean("cageBorn"))
             event.setCanceled(true);
     }
 

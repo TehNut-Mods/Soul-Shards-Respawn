@@ -20,10 +20,10 @@ public class ConfigGui extends GuiConfig {
 
     private static List<IConfigElement> getConfigElements() {
         return Lists.newArrayList(
-                new ConfigElement(SoulShards.config.getConfig().getCategory("balance")),
-                new ConfigElement(SoulShards.config.getConfig().getCategory("entity_list")),
-                new ConfigElement(SoulShards.config.getConfig().getCategory("server")),
-                new ConfigElement(SoulShards.config.getConfig().getCategory("client"))
+                new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("balance")),
+                new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("entity_list")),
+                new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("server")),
+                new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("client"))
         );
     }
 

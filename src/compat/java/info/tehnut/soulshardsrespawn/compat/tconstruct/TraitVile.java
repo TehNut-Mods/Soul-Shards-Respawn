@@ -23,7 +23,7 @@ public class TraitVile extends AbstractTrait {
         if (!(player instanceof EntityPlayer))
             return;
 
-        if (!SoulShards.config.allowFakePlayers() && player instanceof FakePlayer)
+        if (!SoulShards.CONFIG.allowFakePlayers() && player instanceof FakePlayer)
             return;
 
         if (wasHit && target.getHealth() <= 0.01) {

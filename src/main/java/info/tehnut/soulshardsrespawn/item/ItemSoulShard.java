@@ -57,7 +57,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
             return EnumActionResult.PASS;
 
         if (state.getBlock() instanceof BlockMobSpawner) {
-            if (!SoulShards.config.allowSpawnerAbsorption()) {
+            if (!SoulShards.CONFIG.allowSpawnerAbsorption()) {
                 player.sendStatusMessage(new TextComponentTranslation("chat.soulshardsrespawn.absorb_disabled"), true);
                 return EnumActionResult.PASS;
             }
@@ -71,13 +71,13 @@ public class ItemSoulShard extends Item implements ISoulShard {
 
             try {
                 ResourceLocation entityId = (ResourceLocation) GET_ENTITY_ID_METHOD.invoke(mobSpawner.getSpawnerBaseLogic());
-                if (!SoulShards.config.isEntityEnabled(entityId))
+                if (!SoulShards.CONFIG.isEntityEnabled(entityId))
                     return EnumActionResult.PASS;
 
                 if (entityId == null || binding.getBoundEntity() == null || !binding.getBoundEntity().equals(entityId))
                     return EnumActionResult.FAIL;
 
-                updateBinding(stack, binding.addKills(SoulShards.config.getAbsorptionBonus()));
+                updateBinding(stack, binding.addKills(SoulShards.CONFIG.getAbsorptionBonus()));
                 world.destroyBlock(pos, false);
                 return EnumActionResult.SUCCESS;
             } catch (Exception e) {
@@ -117,11 +117,11 @@ public class ItemSoulShard extends Item implements ISoulShard {
             items.add(stack);
         }
 
-        if (SoulShards.config.explodeCreativeTab()) {
+        if (SoulShards.CONFIG.explodeCreativeTab()) {
             Binding binding = new Binding(null, Tier.maxKills);
-            SoulShards.config.getEntityMap().entrySet()
+            SoulShards.CONFIG.getEntityMap().entrySet()
                     .stream()
-                    .filter(e -> e.getValue() || SoulShards.config.ignoreBlacklistForTab())
+                    .filter(e -> e.getValue() || SoulShards.CONFIG.ignoreBlacklistForTab())
                     .forEach(e -> {
                         binding.setBoundEntity(e.getKey());
                         ItemStack stack = new ItemStack(this);
@@ -165,7 +165,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
         Binding binding = getBinding(stack);
-        return SoulShards.config.displayDurabilityBar() && binding != null && binding.getKills() < Tier.maxKills;
+        return SoulShards.CONFIG.displayDurabilityBar() && binding != null && binding.getKills() < Tier.maxKills;
     }
 
     @Override
