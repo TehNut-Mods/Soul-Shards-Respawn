@@ -1,4 +1,13 @@
 ------------------------------------------------------
+Version 1.0.5
+------------------------------------------------------
+
+- Re-implemented Blood Magic compatibility
+    - Allows Soul Cages to require LP for every mob spawned.
+    - Rate is `(sacrificialValue / 2) * entityHealth`
+    - A T5 Sheep shard was taking 2400LP per set spawned.
+
+------------------------------------------------------
 Version 1.0.4
 ------------------------------------------------------
 
