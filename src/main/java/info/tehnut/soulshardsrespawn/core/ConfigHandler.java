@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.core.data.MultiblockPattern;
 import info.tehnut.soulshardsrespawn.core.util.JsonUtil;
+import info.tehnut.soulshardsrespawn.core.util.compat.ICompatibilityPlugin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -81,6 +82,9 @@ public class ConfigHandler {
         displayDurabilityBar = config.getBoolean("displayDurabilityBar", "client", true, "Displays a durability bar for how full the shard is compared to the max tier available.");
         explodeCreativeTab = config.getBoolean("explodeCreativeTab", "client", false, "Displays a shard for every enabled entity in the creative tab.");
         ignoreBlacklistForTab = config.getBoolean("ignoreBlacklistForTab", "client", false, "Adds blacklisted entities to the creative tab if \"explodeCreativeTab\" is true.");
+
+        for (ICompatibilityPlugin plugin : SoulShards.COMPAT_PLUGINS)
+            plugin.handleConfiguration(config);
 
         config.save();
     }

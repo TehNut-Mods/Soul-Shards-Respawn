@@ -23,7 +23,8 @@ public class ConfigGui extends GuiConfig {
                 new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("balance")),
                 new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("entity_list")),
                 new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("server")),
-                new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("client"))
+                new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("client")),
+                new ConfigElement(SoulShards.CONFIG.getConfig().getCategory("compat"))
         );
     }
 
