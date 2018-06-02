@@ -1,13 +1,13 @@
 # Items
-item.soulshardsrespawn.soul_shard.name=Seelen Scherbe
-item.soulshardsrespawn.soul_shard_unbound.name=Ungebundene Seelen Scherbe
+item.soulshardsrespawn.soul_shard.name=Seelenscherbe
+item.soulshardsrespawn.soul_shard_unbound.name=Ungebundene Seelenscherbe
 item.soulshardsrespawn.corrupted_ingot.name=Verdorbener Barren
 item.soulshardsrespawn.corrupted_essence.name=Verdorbene Essenz
 item.soulshardsrespawn.vile_dust.name=Abscheulicher Staub
 item.soulshardsrespawn.vile_sword.name=Abscheuliches Schwert
 
 # Blocks
-tile.soulshardsrespawn.soul_cage.name=Seelen Käfig
+tile.soulshardsrespawn.soul_cage.name=Seelenkäfig
 
 # Tooltips
 tooltip.soulshardsrespawn.bound=Gebunden an: %s
@@ -15,7 +15,7 @@ tooltip.soulshardsrespawn.kills=Tötungen: %d
 tooltip.soulshardsrespawn.tier=Stufe: %d
 
 # Enchantment
-enchantment.soul_stealer=Seelen Dieb
+enchantment.soul_stealer=Seelendieb
 
 # Entities
 entity.WitherSkeleton.name=Witherskelett
