@@ -1,4 +1,11 @@
 ------------------------------------------------------
+Version 1.0.6
+------------------------------------------------------
+
+- Fixed crash when mods requested a capability from the tile that wasn't IItemHandler
+    - I hate the capability contract.
+
+------------------------------------------------------
 Version 1.0.5
 ------------------------------------------------------
 
