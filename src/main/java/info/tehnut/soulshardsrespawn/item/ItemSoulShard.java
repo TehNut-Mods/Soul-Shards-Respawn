@@ -1,6 +1,7 @@
 package info.tehnut.soulshardsrespawn.item;
 
 import info.tehnut.soulshardsrespawn.SoulShards;
+import info.tehnut.soulshardsrespawn.api.IShardTier;
 import info.tehnut.soulshardsrespawn.api.ISoulShard;
 import info.tehnut.soulshardsrespawn.block.TileEntitySoulCage;
 import info.tehnut.soulshardsrespawn.core.RegistrarSoulShards;
@@ -46,6 +47,15 @@ public class ItemSoulShard extends Item implements ISoulShard {
         setUnlocalizedName(SoulShards.MODID + ".soul_shard");
         setCreativeTab(SoulShards.TAB_SS);
         setHasSubtypes(true);
+
+        addPropertyOverride(new ResourceLocation(SoulShards.MODID, "bound"), (stack, worldIn, entityIn) -> getBinding(stack) != null ? 1.0F : 0.0F);
+        addPropertyOverride(new ResourceLocation(SoulShards.MODID, "tier"), (stack, world, entity) -> {
+            Binding binding = getBinding(stack);
+            if (binding == null)
+                return 0F;
+
+            return Float.valueOf("0." + Tier.INDEXED.indexOf(binding.getTier()));
+        });
     }
 
     @Override
@@ -110,7 +120,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
 
         items.add(new ItemStack(this));
 
-        for (Tier tier : Tier.INDEXED) {
+        for (IShardTier tier : Tier.INDEXED) {
             ItemStack stack = new ItemStack(this);
             Binding binding = new Binding(null, tier.getKillRequirement());
             updateBinding(stack, binding);

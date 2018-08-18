@@ -3,7 +3,6 @@ package info.tehnut.soulshardsrespawn.core;
 import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.block.BlockSoulCage;
 import info.tehnut.soulshardsrespawn.block.TileEntitySoulCage;
-import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.core.data.Tier;
 import info.tehnut.soulshardsrespawn.core.util.EnchantmentSoulStealer;
 import info.tehnut.soulshardsrespawn.item.ItemEnum;
@@ -82,17 +81,7 @@ public class RegistrarSoulShards {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void registerModels(ModelRegistryEvent event) {
-        ModelLoader.registerItemVariants(SOUL_SHARD, new ModelResourceLocation(SOUL_SHARD.getRegistryName(), "inventory"));
-        for (int i = 0; i < Tier.INDEXED.size(); i++)
-            ModelLoader.registerItemVariants(SOUL_SHARD, new ModelResourceLocation(SOUL_SHARD.getRegistryName() + "_tier_" + i, "inventory"));
-
-        ModelLoader.setCustomMeshDefinition(SOUL_SHARD, stack -> {
-            Binding binding = ((ItemSoulShard) stack.getItem()).getBinding(stack);
-            if (binding == null)
-                return new ModelResourceLocation(SOUL_SHARD.getRegistryName(), "inventory");
-
-            return new ModelResourceLocation(SOUL_SHARD.getRegistryName() + "_tier_" + binding.getTier().getIndex(), "inventory");
-        });
+        ModelLoader.setCustomModelResourceLocation(SOUL_SHARD, 0, new ModelResourceLocation(SOUL_SHARD.getRegistryName(), "inventory"));
 
         for (Materials material : Materials.values())
             ModelLoader.setCustomModelResourceLocation(MATERIALS, material.ordinal(), new ModelResourceLocation(SoulShards.MODID + ":" + material.getInternalName(), "inventory"));

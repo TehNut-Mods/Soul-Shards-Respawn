@@ -14,8 +14,8 @@ import java.util.TreeMap;
 
 public class Tier implements IShardTier {
 
-    public static final TreeMap<Integer, Tier> TIERS = Maps.newTreeMap();
-    public static final List<Tier> INDEXED = Lists.newArrayList();
+    public static final TreeMap<Integer, IShardTier> TIERS = Maps.newTreeMap();
+    public static final List<IShardTier> INDEXED = Lists.newArrayList();
     public static int maxKills;
 
     // How many kills required to reach this tier.
