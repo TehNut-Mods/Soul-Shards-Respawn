@@ -1,0 +1,59 @@
+# Creative Tab
+itemGroup.soulshardsrespawn=Soul Shards Respawn
+
+# Items
+item.soulshardsrespawn.soul_shard.name=Fragment d'âme
+item.soulshardsrespawn.soul_shard_unbound.name=Fragment d'âme délié
+item.soulshardsrespawn.corrupted_ingot.name=Lingot corrompu
+item.soulshardsrespawn.corrupted_essence.name=Essence corrompue
+item.soulshardsrespawn.vile_dust.name=Poussière vile
+item.soulshardsrespawn.vile_sword.name=Épée vile
+
+# Blocks
+tile.soulshardsrespawn.soul_cage.name=Cage à âme
+
+# Tooltips
+tooltip.soulshardsrespawn.bound=Lié à: %s
+tooltip.soulshardsrespawn.kills=Âmes: %d
+tooltip.soulshardsrespawn.tier=Tier: %d
+tooltip.soulshardsrespawn.owner=Propriétaire: %s
+tooltip.soulshardsrespawn.cage_born=Né dans une cage
+
+# Enchantment
+enchantment.soul_stealer=Voleur d'âme
+
+# Entities
+entity.WitherSkeleton.name=Wither squelette
+
+# Chat
+chat.soulshardsrespawn.absorb_disabled=§cLe fragment semble refuser l'âme piégée...
+chat.soulshardsrespawn.command_killed=§2%d §2Entités §2tuées
+chat.soulshardsrespawn.command_not_found=§cAucune entité spawnée trouvée
+
+# Commands
+commands.soulshardsrespawn.usage=/soulshards [setEnt|setKills|setOwner|killall]
+commands.soulshardsrespawn.set_ent.usage=/soulshards setEnt <entityId>
+commands.soulshardsrespawn.set_ent.success=L'entité liée du fragment tenu est désormais %s.
+commands.soulshardsrespawn.set_kills.usage=/soulshards setKills <killCount>
+commands.soulshardsrespawn.set_kills.success=Le nombre de victimes du fragment tenu est désormais %d.
+commands.soulshardsrespawn.set_owner.usage=/soulshards setOwner [owner]
+commands.soulshardsrespawn.set_owner.success=Le propriétaire du fragment tenu est désormais %s.
+commands.soulshardsrespawn.kill_all.usage=/soulshards killall
+commands.soulshardsrespawn.kill_all.success=Tué %d entités nées dans une cage.
+commands.soulshardsrespawn.error.not_a_shard=L'item tenu n'est pas un fragment d'âme.
+commands.soulshardsrespawn.error.not_a_entity=%s est invalide ou non homologué.
+
+# TConstruct
+modifier.soul_stealer.name=Voleur d'âme
+modifier.soul_stealer.desc=Âmes additionnelles par mort pour vos fragments d'âme
+modifier.soul_stealer.extra=Âmes obtenues: +%s
+modifier.vile.name=Vil
+modifier.vile.desc=Ajoute une âme addionnelle par mort pour votre fragment d'âme
+material.corrupted.name=Corrompu
+fluid.soulshardsrespawn.corrupted.name=Corruption en fusion
+
+# Wawla
+enchantment.soulshardsrespawn.soul_stealer.desc=Augmente les âmes collectées par mort d'un par niveau.
+
+# JEI
+jei.soulshardsrespawn.soul_shard.desc=Un conteneur pour les âmes des morts.\n\n Obtenu en créant une structure dans le monde et en utilisant un %s sur le bloc origine.
