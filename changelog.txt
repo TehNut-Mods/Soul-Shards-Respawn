@@ -1,4 +1,12 @@
 ------------------------------------------------------
+Version 1.0.7
+------------------------------------------------------
+
+- Prepped model handling for 1.13, transition should be smoother now.
+- Added Baguette translation (french)
+- Fixed issue where CraftTweaker scripts couldn't remove the Tinker's Construct compatibility materials
+
+------------------------------------------------------
 Version 1.0.6
 ------------------------------------------------------
 
