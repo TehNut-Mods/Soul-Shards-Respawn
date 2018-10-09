@@ -5,7 +5,6 @@ import info.tehnut.soulshardsrespawn.core.util.compat.CompatibilityPlugin;
 import info.tehnut.soulshardsrespawn.core.util.compat.ICompatibilityPlugin;
 import info.tehnut.soulshardsrespawn.item.Materials;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -13,7 +12,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -48,6 +46,8 @@ public class TinkersCompatibilityPlugin implements ICompatibilityPlugin {
         MATERIAL_CORRUPTED.setCraftable(false);
 
         TinkerRegistry.addMaterial(MATERIAL_CORRUPTED);
+        TinkerRegistry.registerMelting(Materials.CORRUPTED_INGOT.getStack(), FLUID_CORRUPTED, Material.VALUE_Ingot);
+        TinkerSmeltery.registerToolpartMeltingCasting(MATERIAL_CORRUPTED);
         TinkerRegistry.addMaterialStats(
                 MATERIAL_CORRUPTED,
                 new HeadMaterialStats(204, 6.00f, 4.00f, DIAMOND),
@@ -56,14 +56,9 @@ public class TinkersCompatibilityPlugin implements ICompatibilityPlugin {
         );
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void registerItems(RegistryEvent.Register<Item> event) {
-    }
-
     @SubscribeEvent
     public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-        TinkerRegistry.registerMelting(Materials.CORRUPTED_INGOT.getStack(), FLUID_CORRUPTED, Material.VALUE_Ingot);
-        TinkerSmeltery.registerToolpartMeltingCasting(MATERIAL_CORRUPTED);
+
         MOD_SOUL_STEALER.addItem(Materials.CORRUPTED_INGOT.getStack(), 16, 1);
 
         MATERIAL_CORRUPTED.addItem("ingotCorrupted", 1, Material.VALUE_Ingot);
