@@ -46,7 +46,6 @@ public class TinkersCompatibilityPlugin implements ICompatibilityPlugin {
         MATERIAL_CORRUPTED.setCraftable(false);
 
         TinkerRegistry.addMaterial(MATERIAL_CORRUPTED);
-        TinkerRegistry.registerMelting(Materials.CORRUPTED_INGOT.getStack(), FLUID_CORRUPTED, Material.VALUE_Ingot);
         TinkerSmeltery.registerToolpartMeltingCasting(MATERIAL_CORRUPTED);
         TinkerRegistry.addMaterialStats(
                 MATERIAL_CORRUPTED,
@@ -58,7 +57,7 @@ public class TinkersCompatibilityPlugin implements ICompatibilityPlugin {
 
     @SubscribeEvent
     public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-
+        TinkerRegistry.registerMelting(Materials.CORRUPTED_INGOT.getStack(), FLUID_CORRUPTED, Material.VALUE_Ingot);
         MOD_SOUL_STEALER.addItem(Materials.CORRUPTED_INGOT.getStack(), 16, 1);
 
         MATERIAL_CORRUPTED.addItem("ingotCorrupted", 1, Material.VALUE_Ingot);
