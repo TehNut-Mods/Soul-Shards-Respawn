@@ -1,4 +1,11 @@
 ------------------------------------------------------
+Version 1.0.8
+------------------------------------------------------
+
+- Fixed issue where all TCon smelting would produce corrupted essence
+    - This was definitely *not* intentionally added to push users towards starting Soul Shards. Not at all.
+
+------------------------------------------------------
 Version 1.0.7
 ------------------------------------------------------
 
