@@ -1,6 +1,7 @@
 package info.tehnut.soulshardsrespawn.core;
 
 import info.tehnut.soulshardsrespawn.SoulShards;
+import info.tehnut.soulshardsrespawn.api.BindingEvent;
 import info.tehnut.soulshardsrespawn.api.ISoulWeapon;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.core.data.MultiblockPattern;
@@ -16,6 +17,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -53,7 +55,9 @@ public class EventHandler {
             if (player instanceof FakePlayer)
                 return;
 
-            ResourceLocation entityId = EntityList.getKey(event.getEntityLiving());
+            BindingEvent.GetEntityName getEntityName = new BindingEvent.GetEntityName(event.getEntityLiving());
+            MinecraftForge.EVENT_BUS.post(getEntityName);
+            ResourceLocation entityId = getEntityName.getEntityId() == null ?  EntityList.getKey(event.getEntityLiving()) : getEntityName.getEntityId();
 
             ItemStack shardItem = getFirstShard(player, entityId);
             if (shardItem.isEmpty())
@@ -62,9 +66,17 @@ public class EventHandler {
 
             boolean newItem = false;
             Binding binding = soulShard.getBinding(shardItem);
-            if (binding == null && shardItem.getCount() > 1) { // Peel off one blank shard from a stack of them
-                shardItem = shardItem.splitStack(1);
-                newItem = true;
+            if (binding == null) {
+                BindingEvent.NewBinding newBinding = new BindingEvent.NewBinding(event.getEntityLiving(), new Binding(null, 0));
+                if (MinecraftForge.EVENT_BUS.post(newBinding))
+                    return;
+
+                if (shardItem.getCount() > 1) { // Peel off one blank shard from a stack of them
+                    shardItem = shardItem.splitStack(1);
+                    newItem = true;
+                }
+
+                binding = (Binding) newBinding.getBinding();
             }
 
             ItemStack mainHand = player.getHeldItem(EnumHand.MAIN_HAND);
@@ -74,8 +86,8 @@ public class EventHandler {
             if (mainHand.getItem() instanceof ISoulWeapon)
                 soulsGained += ((ISoulWeapon) mainHand.getItem()).getSoulBonus(mainHand, player, event.getEntityLiving());
 
-            if (binding == null)
-                binding = new Binding(null, 0);
+            BindingEvent.GainSouls gainSouls = new BindingEvent.GainSouls(event.getEntityLiving(), binding, soulsGained);
+            MinecraftForge.EVENT_BUS.post(gainSouls);
 
             if (binding.getBoundEntity() == null)
                 binding.setBoundEntity(entityId);
@@ -83,7 +95,7 @@ public class EventHandler {
             if (binding.getOwner() == null)
                 binding.setOwner(player.getGameProfile().getId());
 
-            soulShard.updateBinding(shardItem, binding.addKills(soulsGained));
+            soulShard.updateBinding(shardItem, binding.addKills(gainSouls.getAmount()));
             if (newItem) // Give the player the peeled off stack
                 ItemHandlerHelper.giveItemToPlayer(player, shardItem);
         }
