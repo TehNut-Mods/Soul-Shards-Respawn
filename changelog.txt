@@ -1,4 +1,18 @@
 ------------------------------------------------------
+Version 1.1.0
+------------------------------------------------------
+
+- Added compatibility for Chickens
+    - Shards are now able to distinguish between the different types of chicken
+- [API] Added some new Binding related events
+    - BindingEvent.NewBinding
+        - Fired when a shard first gets bound to an entity. This event is cancellable.
+    - BindingEvent.GainSouls
+        - Fired when a shard is meant to gain souls. The amount is modifiable.
+    - BindingEvent.GetEntityName
+        - Fired when attempting to get the internal name for an entity. Can be used to distinguish between sub-entities.
+
+------------------------------------------------------
 Version 1.0.8
 ------------------------------------------------------
 
