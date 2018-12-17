@@ -5,11 +5,10 @@ import info.tehnut.soulshards.item.ItemSoulShard;
 import net.minecraft.client.font.FontRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexBuffer;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -45,8 +44,10 @@ public abstract class MixinItemRenderer {
         float max = (float) Tier.maxKills;
         float percentage = current / max;
         int color = 0x9F63ED;
-        this.renderQuad(buffer, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
-        this.renderQuad(buffer, x + 2, y + 13, (int) (percentage * 13), 1, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
+        buffer.begin(7, VertexFormats.POSITION_COLOR);
+        prepareQuad(buffer, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+        prepareQuad(buffer, x + 2, y + 13, (int) (percentage * 13), 1, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
+        Tessellator.getInstance().draw();
         GlStateManager.enableBlend();
         GlStateManager.enableAlphaTest();
         GlStateManager.enableTexture();
@@ -54,6 +55,10 @@ public abstract class MixinItemRenderer {
         GlStateManager.enableDepthTest();
     }
 
-    @Shadow
-    abstract void renderQuad(VertexBuffer buffer, int x, int y, int width, int height, int r, int g, int b, int alpha);
+    private static void prepareQuad(VertexBuffer buffer, int x, int y, int width, int height, int r, int g, int b, int alpha) {
+        buffer.vertex((double)(x), (double)(y), 0.0D).color(r, g, b, alpha).next();
+        buffer.vertex((double)(x), (double)(y + height), 0.0D).color(r, g, b, alpha).next();
+        buffer.vertex((double)(x + width), (double)(y + height), 0.0D).color(r, g, b, alpha).next();
+        buffer.vertex((double)(x + width), (double)(y), 0.0D).color(r, g, b, alpha).next();
+    }
 }
