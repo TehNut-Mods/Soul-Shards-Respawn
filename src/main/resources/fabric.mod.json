@@ -2,7 +2,7 @@
   "id": "soulshards",
   "name": "Soul Shards Respawn",
   "description": "Powerful spawners for any mob!",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "side": "universal",
   "initializer": "info.tehnut.soulshards.SoulShards",
