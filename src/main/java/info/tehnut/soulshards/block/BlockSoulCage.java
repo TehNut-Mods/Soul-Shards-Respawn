@@ -17,7 +17,7 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Facing;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -36,7 +36,7 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Facing facing, float hitX, float hitY, float hitZ) {
+    public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (!player.isSneaking())
             return false;
 
@@ -60,7 +60,7 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
     public void onBroken(IWorld world, BlockPos pos, BlockState state) {
         TileEntitySoulCage cage = (TileEntitySoulCage) world.getBlockEntity(pos);
         if (cage != null)
-            ItemScatterer.spawn(world.method_8410(), pos, cage.inventory);
+            ItemScatterer.spawn(world.getWorld(), pos, cage.inventory);
     }
 
     @Override

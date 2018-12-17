@@ -1,6 +1,11 @@
 package info.tehnut.soulshards.block;
 
-import net.fabricmc.fabric.util.HandlerList;
+import info.tehnut.soulshards.SoulShards;
+import info.tehnut.soulshards.api.CageSpawnEvent;
+import info.tehnut.soulshards.core.RegistrarSoulShards;
+import info.tehnut.soulshards.core.data.Binding;
+import info.tehnut.soulshards.item.ItemSoulShard;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.class_3730;
@@ -12,7 +17,6 @@ import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Tickable;
@@ -22,11 +26,6 @@ import net.minecraft.util.math.BoundingBox;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.LightType;
-import info.tehnut.soulshards.SoulShards;
-import info.tehnut.soulshards.api.CageSpawnEvent;
-import info.tehnut.soulshards.core.RegistrarSoulShards;
-import info.tehnut.soulshards.core.data.Binding;
-import info.tehnut.soulshards.item.ItemSoulShard;
 import net.minecraft.world.dimension.DimensionType;
 
 public class TileEntitySoulCage extends BlockEntity implements Tickable {
@@ -43,17 +42,14 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
                     return false;
 
                 Binding binding = ((ItemSoulShard) stack.getItem()).getBinding(stack);
-                if (binding == null || binding.getBoundEntity() == null || !SoulShards.CONFIG.getEntityList().isEnabled(binding.getBoundEntity()))
-                    return false;
-
-                return true;
+                return binding != null && binding.getBoundEntity() != null && SoulShards.CONFIG.getEntityList().isEnabled(binding.getBoundEntity());
             }
         };
     }
 
     @Override
     public void tick() {
-        if (getWorld() == null || getWorld().isRemote)
+        if (getWorld() == null || getWorld().isClient)
             return;
 
         TypedActionResult<Binding> result = canSpawn();
@@ -92,7 +88,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
         if (binding == null || binding.getBoundEntity() == null)
             return;
 
-        EntityType entityType = Registry.ENTITY_TYPES.get(binding.getBoundEntity());
+        EntityType entityType = Registry.ENTITY_TYPE.get(binding.getBoundEntity());
         spawnLoop:
         for (int i = 0; i < binding.getTier().getSpawnAmount(); i++) {
             for (int attempts = 0; attempts < 5; attempts++) {
@@ -102,7 +98,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
                 double z = getPos().getZ() + (world.random.nextDouble() - world.random.nextDouble()) * 4.0D;
                 BlockPos spawnAt = new BlockPos(x, y, z);
 
-                LivingEntity entityLiving = (LivingEntity) entityType.newInstance(getWorld());
+                LivingEntity entityLiving = (LivingEntity) entityType.create(getWorld());
                 if (entityLiving == null)
                     continue;
 
@@ -116,7 +112,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
                     if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.canUsePortals()) // canUsePortals -> isNonBoss
                         continue;
 
-                    Object[] subscribers = ((HandlerList<CageSpawnEvent>) CageSpawnEvent.CAGE_SPAWN).getBackingArray();
+                    Object[] subscribers = ((HandlerArray<CageSpawnEvent>) CageSpawnEvent.CAGE_SPAWN).getBackingArray();
                     for (Object subscriber : subscribers) {
                         ActionResult result = ((CageSpawnEvent) subscriber).onCageSpawn(binding, inventory.getInvStack(0), entityLiving);
                         if (result == ActionResult.FAILURE)
@@ -204,7 +200,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     public boolean ownerOnline() {
         Binding binding = getBinding();
         //noinspection ConstantConditions
-        return binding != null && binding.getOwner() != null && world.getServer().getConfigurationManager().getPlayer(binding.getOwner()) == null;
+        return binding != null && binding.getOwner() != null && world.getServer().getPlayerManager().getPlayer(binding.getOwner()) == null;
     }
 
     public Inventory getInventory() {

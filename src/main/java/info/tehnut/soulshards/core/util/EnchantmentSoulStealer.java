@@ -7,7 +7,7 @@ import net.minecraft.entity.EquipmentSlot;
 public class EnchantmentSoulStealer extends Enchantment {
 
     public EnchantmentSoulStealer() {
-        super(Weight.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[] { EquipmentSlot.HAND_MAIN });
+        super(Weight.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.HAND_MAIN});
     }
 
     @Override

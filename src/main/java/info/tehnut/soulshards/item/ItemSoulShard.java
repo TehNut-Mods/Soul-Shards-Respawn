@@ -1,7 +1,12 @@
 package info.tehnut.soulshards.item;
 
+import info.tehnut.soulshards.SoulShards;
 import info.tehnut.soulshards.api.IShardTier;
+import info.tehnut.soulshards.api.ISoulShard;
 import info.tehnut.soulshards.block.TileEntitySoulCage;
+import info.tehnut.soulshards.core.RegistrarSoulShards;
+import info.tehnut.soulshards.core.data.Binding;
+import info.tehnut.soulshards.core.data.Tier;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MobSpawnerBlock;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
@@ -22,11 +27,6 @@ import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import info.tehnut.soulshards.SoulShards;
-import info.tehnut.soulshards.api.ISoulShard;
-import info.tehnut.soulshards.core.RegistrarSoulShards;
-import info.tehnut.soulshards.core.data.Binding;
-import info.tehnut.soulshards.core.data.Tier;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -36,6 +36,7 @@ import java.util.List;
 public class ItemSoulShard extends Item implements ISoulShard {
 
     private static final MethodHandle GET_SPAWNER_ENTITY;
+
     static {
         try {
             Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("method_8281");
@@ -115,14 +116,14 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World world, List<TextComponent> tooltip, TooltipOptions options) {
+    public void buildTooltip(ItemStack stack, World world, List<TextComponent> tooltip, TooltipOptions options) {
         Binding binding = getBinding(stack);
         if (binding == null)
             return;
 
         Style greyColor = new Style().setColor(TextFormat.GRAY);
         if (binding.getBoundEntity() != null) {
-            EntityType entityEntry = Registry.ENTITY_TYPES.get(binding.getBoundEntity());
+            EntityType entityEntry = Registry.ENTITY_TYPE.get(binding.getBoundEntity());
             if (entityEntry != null)
                 tooltip.add(new TranslatableTextComponent("tooltip.soulshards.bound", entityEntry.getTextComponent()).setStyle(greyColor));
             else

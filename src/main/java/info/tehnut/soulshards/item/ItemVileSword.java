@@ -1,12 +1,12 @@
 package info.tehnut.soulshards.item;
 
+import info.tehnut.soulshards.api.ISoulWeapon;
+import info.tehnut.soulshards.core.RegistrarSoulShards;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.LazyCachedSupplier;
-import info.tehnut.soulshards.api.ISoulWeapon;
-import info.tehnut.soulshards.core.RegistrarSoulShards;
+import net.minecraft.util.Lazy;
 
 public class ItemVileSword extends SwordItem implements ISoulWeapon {
 
@@ -23,10 +23,10 @@ public class ItemVileSword extends SwordItem implements ISoulWeapon {
 
     public static class MaterialVile implements ToolMaterial {
 
-        private final LazyCachedSupplier<Ingredient> ingredient;
+        private final Lazy<Ingredient> ingredient;
 
         public MaterialVile() {
-            this.ingredient = new LazyCachedSupplier<>(() -> Ingredient.ofStacks(new ItemStack(RegistrarSoulShards.CORRUPTED_INGOT)));
+            this.ingredient = new Lazy<>(() -> Ingredient.ofStacks(new ItemStack(RegistrarSoulShards.CORRUPTED_INGOT)));
         }
 
         @Override

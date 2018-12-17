@@ -1,10 +1,13 @@
 package info.tehnut.soulshards.core.mixin.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import info.tehnut.soulshards.SoulShards;
+import info.tehnut.soulshards.core.data.Binding;
+import info.tehnut.soulshards.core.data.Tier;
 import info.tehnut.soulshards.item.ItemSoulShard;
 import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexBuffer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
@@ -12,9 +15,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import info.tehnut.soulshards.SoulShards;
-import info.tehnut.soulshards.core.data.Binding;
-import info.tehnut.soulshards.core.data.Tier;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
@@ -39,7 +39,7 @@ public abstract class MixinItemRenderer {
         GlStateManager.disableAlphaTest();
         GlStateManager.disableBlend();
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getVertexBuffer();
+        BufferBuilder buffer = tessellator.getBufferBuilder();
         float current = (float) binding.getKills();
         float max = (float) Tier.maxKills;
         float percentage = current / max;
@@ -55,10 +55,10 @@ public abstract class MixinItemRenderer {
         GlStateManager.enableDepthTest();
     }
 
-    private static void prepareQuad(VertexBuffer buffer, int x, int y, int width, int height, int r, int g, int b, int alpha) {
-        buffer.vertex((double)(x), (double)(y), 0.0D).color(r, g, b, alpha).next();
-        buffer.vertex((double)(x), (double)(y + height), 0.0D).color(r, g, b, alpha).next();
-        buffer.vertex((double)(x + width), (double)(y + height), 0.0D).color(r, g, b, alpha).next();
-        buffer.vertex((double)(x + width), (double)(y), 0.0D).color(r, g, b, alpha).next();
+    private static void prepareQuad(BufferBuilder buffer, int x, int y, int width, int height, int r, int g, int b, int alpha) {
+        buffer.vertex((double) (x), (double) (y), 0.0D).color(r, g, b, alpha).next();
+        buffer.vertex((double) (x), (double) (y + height), 0.0D).color(r, g, b, alpha).next();
+        buffer.vertex((double) (x + width), (double) (y + height), 0.0D).color(r, g, b, alpha).next();
+        buffer.vertex((double) (x + width), (double) (y), 0.0D).color(r, g, b, alpha).next();
     }
 }

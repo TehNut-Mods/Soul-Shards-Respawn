@@ -158,10 +158,10 @@ public class ConfigSoulShards {
 
         private static Map<String, Boolean> getDefaults() {
             Map<String, Boolean> defaults = Maps.newHashMap();
-            Registry.ENTITY_TYPES.stream()
+            Registry.ENTITY_TYPE.stream()
                     .filter(e -> LivingEntity.class.isAssignableFrom(e.getEntityClass()))
                     .forEach(e -> {
-                        String entityId = Registry.ENTITY_TYPES.getId(e).toString();
+                        String entityId = Registry.ENTITY_TYPE.getId(e).toString();
                         defaults.put(entityId, !DEFAULT_DISABLES.contains(entityId));
                     });
             return defaults;

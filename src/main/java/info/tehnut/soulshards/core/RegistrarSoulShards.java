@@ -3,6 +3,7 @@ package info.tehnut.soulshards.core;
 import info.tehnut.soulshards.SoulShards;
 import info.tehnut.soulshards.block.BlockSoulCage;
 import info.tehnut.soulshards.block.TileEntitySoulCage;
+import info.tehnut.soulshards.core.util.EnchantmentSoulStealer;
 import info.tehnut.soulshards.item.ItemSoulShard;
 import info.tehnut.soulshards.item.ItemVileSword;
 import net.minecraft.block.Block;
@@ -13,7 +14,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import info.tehnut.soulshards.core.util.EnchantmentSoulStealer;
 
 public class RegistrarSoulShards {
 
@@ -31,7 +31,7 @@ public class RegistrarSoulShards {
 
     public static void registerBlocks(Registry<Block> registry) {
         Registry.register(registry, new Identifier(SoulShards.MODID, "soul_cage"), SOUL_CAGE);
-        Registry.register(Registry.BLOCK_ENTITIES, new Identifier(SoulShards.MODID, "soul_cage"), SOUL_CAGE_TE);
+        Registry.register(Registry.BLOCK_ENTITY, new Identifier(SoulShards.MODID, "soul_cage"), SOUL_CAGE_TE);
     }
 
     public static void registerItems(Registry<Item> registry) {

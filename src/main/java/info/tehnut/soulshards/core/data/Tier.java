@@ -101,7 +101,7 @@ public class Tier implements IShardTier {
     }
 
     private static Tier[] generateDefaults() {
-        return new Tier[] {
+        return new Tier[]{
                 new Tier(0, true, false, false, 0, 0),
                 new Tier(64, true, true, false, 2, 20 * 20),
                 new Tier(128, true, true, false, 4, 10 * 20),

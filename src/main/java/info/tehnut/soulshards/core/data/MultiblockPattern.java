@@ -10,7 +10,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.ActionResult;
@@ -33,24 +32,24 @@ public class MultiblockPattern {
 
     public static final MultiblockPattern DEFAULT = new MultiblockPattern(
             new ItemStack(Items.DIAMOND),
-            new String[] {
+            new String[]{
                     "OQO",
                     "QGQ",
                     "OQO"
             },
             new Point(1, 1),
             new HashMap<Character, Slot>() {{
-                    put('O', new Slot(Blocks.OBSIDIAN));
-                    put('Q', new Slot(
-                            Blocks.QUARTZ_BLOCK.getDefaultState(),
-                            Blocks.QUARTZ_PILLAR.getDefaultState(),
-                            Blocks.CHISELED_QUARTZ_BLOCK.getDefaultState(),
-                            Blocks.SMOOTH_QUARTZ.getDefaultState(),
-                            Blocks.QUARTZ_SLAB.getDefaultState().with(Properties.SLAB_TYPE, SlabType.DOUBLE),
-                            Blocks.SMOOTH_QUARTZ_SLAB.getDefaultState().with(Properties.SLAB_TYPE, SlabType.DOUBLE)
-                    ));
-                    put('G', new Slot(Blocks.GLOWSTONE));
-             }}
+                put('O', new Slot(Blocks.OBSIDIAN));
+                put('Q', new Slot(
+                        Blocks.QUARTZ_BLOCK.getDefaultState(),
+                        Blocks.QUARTZ_PILLAR.getDefaultState(),
+                        Blocks.CHISELED_QUARTZ_BLOCK.getDefaultState(),
+                        Blocks.SMOOTH_QUARTZ.getDefaultState(),
+                        Blocks.QUARTZ_SLAB.getDefaultState().with(Properties.SLAB_TYPE, SlabType.DOUBLE),
+                        Blocks.SMOOTH_QUARTZ_SLAB.getDefaultState().with(Properties.SLAB_TYPE, SlabType.DOUBLE)
+                ));
+                put('G', new Slot(Blocks.GLOWSTONE));
+            }}
     );
 
     private final ItemStack catalyst;
@@ -131,11 +130,12 @@ public class MultiblockPattern {
             JsonObject json = element.getAsJsonObject();
 
             Identifier itemId = new Identifier(json.getAsJsonObject("catalyst").getAsJsonPrimitive("item").getAsString());
-            ItemStack catalyst = new ItemStack(Registry.ITEMS.get(itemId), 1);
+            ItemStack catalyst = new ItemStack(Registry.ITEM.get(itemId), 1);
 
             String[] shape = context.deserialize(json.getAsJsonArray("shape"), String[].class);
             Point origin = context.deserialize(json.getAsJsonObject("origin"), Point.class);
-            Map<Character, Slot> definition = context.deserialize(json.getAsJsonObject("definition"), new TypeToken<Map<Character, Slot>>(){}.getType());
+            Map<Character, Slot> definition = context.deserialize(json.getAsJsonObject("definition"), new TypeToken<Map<Character, Slot>>() {
+            }.getType());
 
             return new MultiblockPattern(catalyst, shape, origin, definition);
         }
@@ -148,7 +148,7 @@ public class MultiblockPattern {
             for (JsonElement entry : element.getAsJsonArray()) {
                 if (entry.isJsonObject()) {
                     JsonObject json = entry.getAsJsonObject();
-                    Block block = Registry.BLOCKS.get(new Identifier(json.getAsJsonPrimitive("block").getAsString()));
+                    Block block = Registry.BLOCK.get(new Identifier(json.getAsJsonPrimitive("block").getAsString()));
                     BlockState state = block.getDefaultState();
                     if (json.has("states")) {
                         JsonObject stateObject = json.getAsJsonObject("states");

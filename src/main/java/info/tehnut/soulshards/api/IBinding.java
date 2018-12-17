@@ -1,4 +1,5 @@
 package info.tehnut.soulshards.api;
+
 import net.minecraft.util.Identifier;
 
 import java.util.UUID;

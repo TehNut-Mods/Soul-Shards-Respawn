@@ -1,7 +1,11 @@
 package info.tehnut.soulshards;
 
 import com.google.gson.reflect.TypeToken;
+import info.tehnut.soulshards.core.ConfigSoulShards;
 import info.tehnut.soulshards.core.EventHandler;
+import info.tehnut.soulshards.core.RegistrarSoulShards;
+import info.tehnut.soulshards.core.data.Tier;
+import info.tehnut.soulshards.core.util.JsonUtil;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.entity.LivingEntity;
@@ -9,10 +13,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.util.registry.Registry;
-import info.tehnut.soulshards.core.ConfigSoulShards;
-import info.tehnut.soulshards.core.RegistrarSoulShards;
-import info.tehnut.soulshards.core.data.Tier;
-import info.tehnut.soulshards.core.util.JsonUtil;
 import net.minecraft.world.GameRules;
 
 import java.io.File;
@@ -27,9 +27,9 @@ public class SoulShards implements ModInitializer {
     public void onInitialize() {
         Tier.readTiers();
         ConfigSoulShards.handleMultiblock();
-        RegistrarSoulShards.registerBlocks(Registry.BLOCKS);
-        RegistrarSoulShards.registerItems(Registry.ITEMS);
-        RegistrarSoulShards.registerEnchantments(Registry.ENCHANTMENTS);
+        RegistrarSoulShards.registerBlocks(Registry.BLOCK);
+        RegistrarSoulShards.registerItems(Registry.ITEM);
+        RegistrarSoulShards.registerEnchantments(Registry.ENCHANTMENT);
         EventHandler.init();
         GameRules.getKeys().put("allowCageSpawns", new GameRules.Key("true", GameRules.Type.BOOLEAN));
     }
