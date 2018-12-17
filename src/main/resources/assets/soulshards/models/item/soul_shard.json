@@ -1,0 +1,50 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "soulshards:item/soul_shard"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "soulshards:bound": 1.0,
+        "soulshards:tier": 0.0
+      },
+      "model": "soulshards:item/soul_shard_tier_0"
+    },
+    {
+      "predicate": {
+        "soulshards:bound": 1.0,
+        "soulshards:tier": 0.1
+      },
+      "model": "soulshards:item/soul_shard_tier_1"
+    },
+    {
+      "predicate": {
+        "soulshards:bound": 1.0,
+        "soulshards:tier": 0.2
+      },
+      "model": "soulshards:item/soul_shard_tier_2"
+    },
+    {
+      "predicate": {
+        "soulshards:bound": 1.0,
+        "soulshards:tier": 0.3
+      },
+      "model": "soulshards:item/soul_shard_tier_3"
+    },
+    {
+      "predicate": {
+        "soulshards:bound": 1.0,
+        "soulshards:tier": 0.4
+      },
+      "model": "soulshards:item/soul_shard_tier_4"
+    },
+    {
+      "predicate": {
+        "soulshards:bound": 1.0,
+        "soulshards:tier": 0.5
+      },
+      "model": "soulshards:item/soul_shard_tier_5"
+    }
+  ]
+}

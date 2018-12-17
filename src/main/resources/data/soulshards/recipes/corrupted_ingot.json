@@ -1,0 +1,22 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "CVC",
+    "VIV",
+    "CVC"
+  ],
+  "key": {
+    "C": {
+      "item": "soulshards:corrupted_essence"
+    },
+    "V": {
+      "item": "soulshards:vile_dust"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "soulshards:corrupted_ingot"
+  }
+}

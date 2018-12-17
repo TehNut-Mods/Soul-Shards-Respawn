@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "info.tehnut.soulshards.core.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "SoulShardsRespawn-refmap.json",
+  "mixins": [
+    "MixinEntityLiving"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

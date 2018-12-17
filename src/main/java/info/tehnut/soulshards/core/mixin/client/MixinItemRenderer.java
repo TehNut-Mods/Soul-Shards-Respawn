@@ -1,0 +1,59 @@
+package info.tehnut.soulshards.core.mixin.client;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import info.tehnut.soulshards.item.ItemSoulShard;
+import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexBuffer;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import info.tehnut.soulshards.SoulShards;
+import info.tehnut.soulshards.core.data.Binding;
+import info.tehnut.soulshards.core.data.Tier;
+
+@Mixin(ItemRenderer.class)
+public abstract class MixinItemRenderer {
+
+    @Inject(method = "renderItemOverlaysInGUIWithText", at = @At("RETURN"))
+    private void renderShardFullness(FontRenderer font, ItemStack stack, int x, int y, String text, CallbackInfo callbackInfo) {
+        if (!SoulShards.CONFIG.getClient().displayDurabilityBar())
+            return;
+
+        if (stack.isEmpty() || !(stack.getItem() instanceof ItemSoulShard))
+            return;
+
+        ItemSoulShard shard = (ItemSoulShard) stack.getItem();
+        Binding binding = shard.getBinding(stack);
+
+        if (binding == null || binding.getKills() >= Tier.maxKills)
+            return;
+
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepthTest();
+        GlStateManager.disableTexture();
+        GlStateManager.disableAlphaTest();
+        GlStateManager.disableBlend();
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer buffer = tessellator.getVertexBuffer();
+        float current = (float) binding.getKills();
+        float max = (float) Tier.maxKills;
+        float percentage = current / max;
+        int color = 0x9F63ED;
+        this.renderQuad(buffer, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+        this.renderQuad(buffer, x + 2, y + 13, (int) (percentage * 13), 1, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
+        GlStateManager.enableBlend();
+        GlStateManager.enableAlphaTest();
+        GlStateManager.enableTexture();
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepthTest();
+    }
+
+    @Shadow
+    abstract void renderQuad(VertexBuffer buffer, int x, int y, int width, int height, int r, int g, int b, int alpha);
+}

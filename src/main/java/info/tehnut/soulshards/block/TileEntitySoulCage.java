@@ -1,0 +1,209 @@
+package info.tehnut.soulshards.block;
+
+import net.fabricmc.fabric.util.HandlerList;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.class_3730;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.Monster;
+import net.minecraft.inventory.BasicInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Tickable;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.LightType;
+import info.tehnut.soulshards.SoulShards;
+import info.tehnut.soulshards.api.CageSpawnEvent;
+import info.tehnut.soulshards.core.RegistrarSoulShards;
+import info.tehnut.soulshards.core.data.Binding;
+import info.tehnut.soulshards.item.ItemSoulShard;
+import net.minecraft.world.dimension.DimensionType;
+
+public class TileEntitySoulCage extends BlockEntity implements Tickable {
+
+    Inventory inventory;
+
+    public TileEntitySoulCage() {
+        super(RegistrarSoulShards.SOUL_CAGE_TE);
+
+        this.inventory = new BasicInventory(new StringTextComponent(""), 1) {
+            @Override
+            public boolean isValidInvStack(int slot, ItemStack stack) {
+                if (!(stack.getItem() instanceof ItemSoulShard))
+                    return false;
+
+                Binding binding = ((ItemSoulShard) stack.getItem()).getBinding(stack);
+                if (binding == null || binding.getBoundEntity() == null || !SoulShards.CONFIG.getEntityList().isEnabled(binding.getBoundEntity()))
+                    return false;
+
+                return true;
+            }
+        };
+    }
+
+    @Override
+    public void tick() {
+        if (getWorld() == null || getWorld().isRemote)
+            return;
+
+        TypedActionResult<Binding> result = canSpawn();
+        if (result.getResult() != ActionResult.SUCCESS) {
+            setState(false);
+            world.updateNeighbors(pos, getCachedState().getBlock());
+            return;
+        }
+
+        setState(true);
+        world.updateNeighbors(pos, getCachedState().getBlock());
+
+        if (world.getTime() % result.getValue().getTier().getCooldown() == 0)
+            spawnEntities();
+    }
+
+    @Override
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
+
+        if (tag.containsKey("shard"))
+            inventory.setInvStack(0, ItemStack.fromTag(tag.getCompound("shard")));
+    }
+
+    @Override
+    public CompoundTag toTag(CompoundTag tag) {
+        ItemStack shardStack = inventory.getInvStack(0);
+        if (!shardStack.isEmpty())
+            tag.put("shard", shardStack.toTag(new CompoundTag()));
+
+        return super.toTag(tag);
+    }
+
+    private void spawnEntities() {
+        Binding binding = getBinding();
+        if (binding == null || binding.getBoundEntity() == null)
+            return;
+
+        EntityType entityType = Registry.ENTITY_TYPES.get(binding.getBoundEntity());
+        spawnLoop:
+        for (int i = 0; i < binding.getTier().getSpawnAmount(); i++) {
+            for (int attempts = 0; attempts < 5; attempts++) {
+
+                double x = getPos().getX() + (world.random.nextDouble() - world.random.nextDouble()) * 4.0D;
+                double y = getPos().getY() + world.random.nextInt(3) - 1;
+                double z = getPos().getZ() + (world.random.nextDouble() - world.random.nextDouble()) * 4.0D;
+                BlockPos spawnAt = new BlockPos(x, y, z);
+
+                LivingEntity entityLiving = (LivingEntity) entityType.newInstance(getWorld());
+                if (entityLiving == null)
+                    continue;
+
+                if (binding.getTier().checkLight() && !canSpawnInLight(entityLiving, spawnAt))
+                    continue;
+
+                entityLiving.setPositionAndAngles(spawnAt, MathHelper.wrapDegrees(world.random.nextFloat() * 360F), 0F);
+                entityLiving.getDataTracker().set(SoulShards.CAGE_BORN_TAG, true);
+
+                if (entityLiving.isValid() && !hasReachedSpawnCap(entityLiving)) { // FIXME - check collision
+                    if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.canUsePortals()) // canUsePortals -> isNonBoss
+                        continue;
+
+                    Object[] subscribers = ((HandlerList<CageSpawnEvent>) CageSpawnEvent.CAGE_SPAWN).getBackingArray();
+                    for (Object subscriber : subscribers) {
+                        ActionResult result = ((CageSpawnEvent) subscriber).onCageSpawn(binding, inventory.getInvStack(0), entityLiving);
+                        if (result == ActionResult.FAILURE)
+                            continue spawnLoop;
+                    }
+
+
+                    world.spawnEntity(entityLiving);
+                    if (entityLiving instanceof MobEntity)
+                        ((MobEntity) entityLiving).method_5943(world, world.getLocalDifficulty(pos), class_3730.SPAWNER, null, null);
+                    break;
+                }
+            }
+        }
+    }
+
+    private TypedActionResult<Binding> canSpawn() {
+        if (world.getServer().getWorld(DimensionType.OVERWORLD).getGameRules().getBoolean("allowCageSpawns"))
+            return new TypedActionResult<>(ActionResult.FAILURE, null);
+
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() != RegistrarSoulShards.SOUL_CAGE)
+            return new TypedActionResult<>(ActionResult.FAILURE, null);
+
+        ItemStack shardStack = inventory.getInvStack(0);
+        if (shardStack.isEmpty() || !(shardStack.getItem() instanceof ItemSoulShard))
+            return new TypedActionResult<>(ActionResult.FAILURE, null);
+
+        Binding binding = ((ItemSoulShard) shardStack.getItem()).getBinding(shardStack);
+        if (binding == null || binding.getBoundEntity() == null)
+            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+
+        if (binding.getTier().getSpawnAmount() == 0)
+            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+
+        if (SoulShards.CONFIG.getBalance().requireOwnerOnline() && !ownerOnline())
+            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+
+        if (!SoulShards.CONFIG.getEntityList().isEnabled(binding.getBoundEntity()))
+            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+
+        if (!SoulShards.CONFIG.getBalance().requireRedstoneSignal()) {
+            if (state.get(BlockSoulCage.POWERED) && binding.getTier().checkRedstone())
+                return new TypedActionResult<>(ActionResult.FAILURE, binding);
+        } else if (!state.get(BlockSoulCage.POWERED))
+            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+
+        if (binding.getTier().checkPlayer() && world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), 16, false) == null)
+            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+
+        return new TypedActionResult<>(ActionResult.SUCCESS, binding);
+    }
+
+    public Binding getBinding() {
+        ItemStack stack = inventory.getInvStack(0);
+        if (stack.isEmpty() || !(stack.getItem() instanceof ItemSoulShard))
+            return null;
+
+        return ((ItemSoulShard) stack.getItem()).getBinding(stack);
+    }
+
+    private boolean canSpawnInLight(LivingEntity entityLiving, BlockPos pos) {
+        return !(entityLiving instanceof Monster) || world.getLightLevel(LightType.BLOCK, pos) <= 8;
+    }
+
+    private boolean hasReachedSpawnCap(LivingEntity living) {
+        BoundingBox box = new BoundingBox(getPos().getX() - 16, getPos().getY() - 16, getPos().getZ() - 16, getPos().getX() + 16, getPos().getY() + 16, getPos().getZ() + 16);
+
+        int mobCount = world.getEntities(living.getClass(), box, e -> e != null && e.getDataTracker().get(SoulShards.CAGE_BORN_TAG)).size();
+        return mobCount >= SoulShards.CONFIG.getBalance().getSpawnCap();
+    }
+
+    public void setState(boolean active) {
+        BlockState state = getCachedState();
+        if (!(state.getBlock() instanceof BlockSoulCage))
+            return;
+
+        world.setBlockState(getPos(), state.with(BlockSoulCage.ACTIVE, active));
+    }
+
+    public boolean ownerOnline() {
+        Binding binding = getBinding();
+        //noinspection ConstantConditions
+        return binding != null && binding.getOwner() != null && world.getServer().getConfigurationManager().getPlayer(binding.getOwner()) == null;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+}

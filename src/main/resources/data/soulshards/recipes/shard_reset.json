@@ -1,0 +1,11 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "soulshards:soul_shard"
+    }
+  ],
+  "result": {
+    "item": "soulshards:soul_shard"
+  }
+}

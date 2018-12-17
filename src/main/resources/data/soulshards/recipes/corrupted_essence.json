@@ -1,0 +1,21 @@
+{
+  "type": "crafting_shapeless",
+  "group": "soulshards",
+  "ingredients": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "result": {
+    "item": "soulshards:corrupted_essence"
+  }
+}
