@@ -112,7 +112,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
                 entityLiving.setPositionAndAngles(spawnAt, MathHelper.wrapDegrees(world.random.nextFloat() * 360F), 0F);
                 entityLiving.getDataTracker().set(SoulShards.CAGE_BORN_TAG, true);
 
-                if (entityLiving.isValid() && !hasReachedSpawnCap(entityLiving)) { // FIXME - check collision
+                if (entityLiving.isValid() && !hasReachedSpawnCap(entityLiving) && !isColliding(entityLiving)) {
                     if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.canUsePortals()) // canUsePortals -> isNonBoss
                         continue;
 
@@ -134,7 +134,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     }
 
     private TypedActionResult<Binding> canSpawn() {
-        if (world.getServer().getWorld(DimensionType.OVERWORLD).getGameRules().getBoolean("allowCageSpawns"))
+        if (!world.getServer().getWorld(DimensionType.OVERWORLD).getGameRules().getBoolean("allowCageSpawns"))
             return new TypedActionResult<>(ActionResult.FAILURE, null);
 
         BlockState state = world.getBlockState(pos);
@@ -187,6 +187,10 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
 
         int mobCount = world.getEntities(living.getClass(), box, e -> e != null && e.getDataTracker().get(SoulShards.CAGE_BORN_TAG)).size();
         return mobCount >= SoulShards.CONFIG.getBalance().getSpawnCap();
+    }
+
+    private boolean isColliding(LivingEntity entity) {
+        return world.isAreaNotEmpty(entity.getBoundingBox()) && world.getEntities(LivingEntity.class, entity.getBoundingBox(), e -> true).isEmpty();
     }
 
     public void setState(boolean active) {
