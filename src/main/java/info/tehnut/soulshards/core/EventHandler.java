@@ -59,7 +59,7 @@ public class EventHandler {
         if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !killed.canUsePortals())
             return;
 
-        if (!SoulShards.CONFIG.getBalance().countCageBornForShard() && killed.getDataTracker().get(SoulShards.CAGE_BORN_TAG))
+        if (!SoulShards.CONFIG.getBalance().countCageBornForShard() && killed.getDataTracker().get(SoulShards.cageBornTag))
             return;
 
         if (source.getAttacker() instanceof PlayerEntity) {

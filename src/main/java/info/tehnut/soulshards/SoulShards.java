@@ -8,10 +8,7 @@ import info.tehnut.soulshards.core.data.Tier;
 import info.tehnut.soulshards.core.util.JsonUtil;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.FabricLoader;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
 
@@ -21,7 +18,7 @@ public class SoulShards implements ModInitializer {
 
     public static final String MODID = "soulshards";
     public static final ConfigSoulShards CONFIG = JsonUtil.fromJson(TypeToken.get(ConfigSoulShards.class), new File(FabricLoader.INSTANCE.getConfigDirectory(), MODID + "/" + MODID + ".json"), new ConfigSoulShards());
-    public static final TrackedData<Boolean> CAGE_BORN_TAG = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    public static TrackedData<Boolean> cageBornTag;
 
     @Override
     public void onInitialize() {
