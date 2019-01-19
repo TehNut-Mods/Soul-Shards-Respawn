@@ -28,12 +28,16 @@ public class SoulShardsWailaPlugin implements IWailaPlugin {
 
         registrar.registerBlockDataProvider((data, player, world, blockEntity) -> {
             Binding binding = ((TileEntitySoulCage) blockEntity).getBinding();
-            data.put("binding", binding.serializeNBT());
+            if (binding != null)
+                data.put("binding", binding.serializeNBT());
         }, TileEntitySoulCage.class);
 
         registrar.registerComponentProvider(new IComponentProvider() {
             @Override
             public void appendBody(List<TextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+                if (!accessor.getServerData().containsKey("binding"))
+                    return;
+
                 Binding binding = new Binding(accessor.getServerData().getCompound("binding"));
 
                 if (binding.getBoundEntity() != null) {
