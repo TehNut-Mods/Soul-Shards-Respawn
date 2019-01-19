@@ -5,19 +5,17 @@ import info.tehnut.soulshards.api.CageSpawnEvent;
 import info.tehnut.soulshards.core.RegistrarSoulShards;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.item.ItemSoulShard;
-import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.class_3730;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.TypedActionResult;
@@ -35,7 +33,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     public TileEntitySoulCage() {
         super(RegistrarSoulShards.SOUL_CAGE_TE);
 
-        this.inventory = new BasicInventory(new StringTextComponent(""), 1) {
+        this.inventory = new BasicInventory(1) {
             @Override
             public boolean isValidInvStack(int slot, ItemStack stack) {
                 if (!(stack.getItem() instanceof ItemSoulShard))
@@ -112,9 +110,9 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
                     if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.canUsePortals()) // canUsePortals -> isNonBoss
                         continue;
 
-                    Object[] subscribers = ((HandlerArray<CageSpawnEvent>) CageSpawnEvent.CAGE_SPAWN).getBackingArray();
-                    for (Object subscriber : subscribers) {
-                        ActionResult result = ((CageSpawnEvent) subscriber).onCageSpawn(binding, inventory.getInvStack(0), entityLiving);
+                    CageSpawnEvent[] handlers = CageSpawnEvent.CAGE_SPAWN.getBackingArray();
+                    for (CageSpawnEvent handler : handlers) {
+                        ActionResult result = handler.onCageSpawn(binding, inventory.getInvStack(0), entityLiving);
                         if (result == ActionResult.FAILURE)
                             continue spawnLoop;
                     }
@@ -122,7 +120,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
 
                     world.spawnEntity(entityLiving);
                     if (entityLiving instanceof MobEntity)
-                        ((MobEntity) entityLiving).method_5943(world, world.getLocalDifficulty(pos), class_3730.SPAWNER, null, null);
+                        ((MobEntity) entityLiving).prepareEntityData(world, world.getLocalDifficulty(pos), SpawnType.SPAWNER, null, null);
                     break;
                 }
             }
@@ -175,7 +173,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     }
 
     private boolean canSpawnInLight(LivingEntity entityLiving, BlockPos pos) {
-        return !(entityLiving instanceof Monster) || world.getLightLevel(LightType.BLOCK, pos) <= 8;
+        return !(entityLiving instanceof Monster) || world.getLightLevel(LightType.BLOCK_LIGHT, pos) <= 8;
     }
 
     private boolean hasReachedSpawnCap(LivingEntity living) {

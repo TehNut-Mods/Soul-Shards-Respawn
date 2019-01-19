@@ -9,7 +9,6 @@ import info.tehnut.soulshards.core.data.MultiblockPattern;
 import info.tehnut.soulshards.core.data.Tier;
 import info.tehnut.soulshards.item.ItemSoulShard;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
-import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
@@ -86,9 +85,9 @@ public class EventHandler {
             if (mainHand.getItem() instanceof ISoulWeapon)
                 soulsGained += ((ISoulWeapon) mainHand.getItem()).getSoulBonus(mainHand, player, killed);
 
-            Object[] subscribers = ((HandlerArray<BindingEvent.GainSouls>) BindingEvent.GAIN_SOULS).getBackingArray();
-            for (Object subscriber : subscribers)
-                soulsGained = ((BindingEvent.GainSouls) subscriber).getGainedSouls(killed, binding, soulsGained);
+            BindingEvent.GainSouls[] handlers = BindingEvent.GAIN_SOULS.getBackingArray();
+            for (BindingEvent.GainSouls handler : handlers)
+                soulsGained = handler.getGainedSouls(killed, binding, soulsGained);
 
             if (binding.getBoundEntity() == null)
                 binding.setBoundEntity(entityId);
@@ -133,9 +132,9 @@ public class EventHandler {
 
     private static Identifier getEntityId(LivingEntity entity) {
         Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
-        Object[] subscribers = ((HandlerArray<BindingEvent.GetEntityName>) BindingEvent.GET_ENTITY_NAME).getBackingArray();
-        for (Object subscriber : subscribers) {
-            Identifier newId = ((BindingEvent.GetEntityName) subscriber).getEntityName(entity, id);
+        BindingEvent.GetEntityName[] handlers = BindingEvent.GET_ENTITY_NAME.getBackingArray();
+        for (BindingEvent.GetEntityName handler : handlers) {
+            Identifier newId = handler.getEntityName(entity, id);
             if (newId != null)
                 id = newId;
         }
@@ -145,9 +144,9 @@ public class EventHandler {
 
     private static Binding getNewBinding(LivingEntity entity) {
         Binding binding = new Binding(null, 0);
-        Object[] subscribers = ((HandlerArray<BindingEvent.NewBinding>) BindingEvent.NEW_BINDING).getBackingArray();
-        for (Object subscriber : subscribers) {
-            TypedActionResult<IBinding> result = ((BindingEvent.NewBinding) subscriber).onNewBinding(entity, binding);
+        BindingEvent.NewBinding[] handlers = BindingEvent.NEW_BINDING.getBackingArray();
+        for (BindingEvent.NewBinding handler : handlers) {
+            TypedActionResult<IBinding> result = handler.onNewBinding(entity, binding);
             if (result.getResult() == ActionResult.FAILURE)
                 return null;
 

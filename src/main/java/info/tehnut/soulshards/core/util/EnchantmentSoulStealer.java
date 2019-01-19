@@ -16,11 +16,6 @@ public class EnchantmentSoulStealer extends Enchantment {
     }
 
     @Override
-    public int getMaximumPower(int level) {
-        return this.getMinimumPower(level) + 20;
-    }
-
-    @Override
     public int getMaximumLevel() {
         return 5;
     }
