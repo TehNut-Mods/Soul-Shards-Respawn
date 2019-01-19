@@ -2,4 +2,7 @@
 Version 1.0.4
 ------------------------------------------------------
 
+- Re-implemented Waila plugin
+    - Cage born entities display that they are
+    - Soul Cages display their tier and spawned entity
 - Updated to 19w03c
