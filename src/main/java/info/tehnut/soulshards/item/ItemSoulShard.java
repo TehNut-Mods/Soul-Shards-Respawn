@@ -62,7 +62,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
-        BlockState state = context.getWorld().getBlockState(context.getPos());
+        BlockState state = context.getWorld().getBlockState(context.getBlockPos());
         Binding binding = getBinding(context.getItemStack());
         if (binding == null)
             return ActionResult.PASS;
@@ -77,7 +77,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
             if (binding.getKills() > Tier.maxKills)
                 return ActionResult.PASS;
 
-            MobSpawnerBlockEntity spawner = (MobSpawnerBlockEntity) context.getWorld().getBlockEntity(context.getPos());
+            MobSpawnerBlockEntity spawner = (MobSpawnerBlockEntity) context.getWorld().getBlockEntity(context.getBlockPos());
             if (spawner == null)
                 return ActionResult.PASS;
 
@@ -90,7 +90,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
                     return ActionResult.FAILURE;
 
                 updateBinding(context.getItemStack(), binding.addKills(SoulShards.CONFIG.getBalance().getAbsorptionBonus()));
-                context.getWorld().breakBlock(context.getPos(), false);
+                context.getWorld().breakBlock(context.getBlockPos(), false);
                 return ActionResult.SUCCESS;
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -99,7 +99,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
             if (binding.getBoundEntity() == null)
                 return ActionResult.FAILURE;
 
-            TileEntitySoulCage cage = (TileEntitySoulCage) context.getWorld().getBlockEntity(context.getPos());
+            TileEntitySoulCage cage = (TileEntitySoulCage) context.getWorld().getBlockEntity(context.getBlockPos());
             if (cage == null)
                 return ActionResult.PASS;
 

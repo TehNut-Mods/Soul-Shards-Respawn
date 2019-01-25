@@ -11,8 +11,8 @@ import net.minecraft.sortme.ItemScatterer;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Property;
-import net.minecraft.util.BlockHitResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
@@ -108,7 +108,7 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public void randomTick(BlockState state, World world, BlockPos pos, Random rand) {
+    public void onRandomTick(BlockState state, World world, BlockPos pos, Random rand) {
         if (state.get(POWERED) && !world.isReceivingRedstonePower(pos))
             world.setBlockState(pos, state.with(POWERED, false));
     }
