@@ -157,7 +157,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     @Override
-    public boolean hasEnchantmentGlow(ItemStack stack) {
+    public boolean hasEnchantmentGlint(ItemStack stack) {
         Binding binding = getBinding(stack);
         return binding != null && binding.getKills() >= Tier.maxKills;
     }
