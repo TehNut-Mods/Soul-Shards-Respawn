@@ -110,7 +110,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
                     if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.canUsePortals()) // canUsePortals -> isNonBoss
                         continue;
 
-                    CageSpawnEvent[] handlers = (CageSpawnEvent[]) CageSpawnEvent.CAGE_SPAWN.toArray();
+                    CageSpawnEvent[] handlers = CageSpawnEvent.CAGE_SPAWN.toArray(new CageSpawnEvent[] { } );
                     for (CageSpawnEvent handler : handlers) {
                         ActionResult result = handler.onCageSpawn(binding, inventory.getInvStack(0), entityLiving);
                         if (result == ActionResult.FAIL)
