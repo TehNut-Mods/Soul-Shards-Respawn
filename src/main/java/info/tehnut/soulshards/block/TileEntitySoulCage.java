@@ -106,21 +106,21 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
                 entityLiving.setPositionAndAngles(spawnAt, MathHelper.wrapDegrees(world.random.nextFloat() * 360F), 0F);
                 entityLiving.getDataTracker().set(SoulShards.cageBornTag, true);
 
-                if (entityLiving.isValid() && !hasReachedSpawnCap(entityLiving) && !isColliding(entityLiving)) {
+                if (entityLiving.isAlive() && !hasReachedSpawnCap(entityLiving) && !isColliding(entityLiving)) {
                     if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.canUsePortals()) // canUsePortals -> isNonBoss
                         continue;
 
-                    CageSpawnEvent[] handlers = CageSpawnEvent.CAGE_SPAWN.getBackingArray();
+                    CageSpawnEvent[] handlers = (CageSpawnEvent[]) CageSpawnEvent.CAGE_SPAWN.toArray();
                     for (CageSpawnEvent handler : handlers) {
                         ActionResult result = handler.onCageSpawn(binding, inventory.getInvStack(0), entityLiving);
-                        if (result == ActionResult.FAILURE)
+                        if (result == ActionResult.FAIL)
                             continue spawnLoop;
                     }
 
 
                     world.spawnEntity(entityLiving);
                     if (entityLiving instanceof MobEntity)
-                        ((MobEntity) entityLiving).prepareEntityData(world, world.getLocalDifficulty(pos), SpawnType.SPAWNER, null, null);
+                        ((MobEntity) entityLiving).initialize(world, world.getLocalDifficulty(pos), SpawnType.SPAWNER, null, null);
                     break;
                 }
             }
@@ -129,37 +129,37 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
 
     private TypedActionResult<Binding> canSpawn() {
         if (!world.getServer().getWorld(DimensionType.OVERWORLD).getGameRules().getBoolean("allowCageSpawns"))
-            return new TypedActionResult<>(ActionResult.FAILURE, null);
+            return new TypedActionResult<>(ActionResult.FAIL, null);
 
         BlockState state = world.getBlockState(pos);
         if (state.getBlock() != RegistrarSoulShards.SOUL_CAGE)
-            return new TypedActionResult<>(ActionResult.FAILURE, null);
+            return new TypedActionResult<>(ActionResult.FAIL, null);
 
         ItemStack shardStack = inventory.getInvStack(0);
         if (shardStack.isEmpty() || !(shardStack.getItem() instanceof ItemSoulShard))
-            return new TypedActionResult<>(ActionResult.FAILURE, null);
+            return new TypedActionResult<>(ActionResult.FAIL, null);
 
         Binding binding = ((ItemSoulShard) shardStack.getItem()).getBinding(shardStack);
         if (binding == null || binding.getBoundEntity() == null)
-            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+            return new TypedActionResult<>(ActionResult.FAIL, binding);
 
         if (binding.getTier().getSpawnAmount() == 0)
-            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+            return new TypedActionResult<>(ActionResult.FAIL, binding);
 
         if (SoulShards.CONFIG.getBalance().requireOwnerOnline() && !ownerOnline())
-            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+            return new TypedActionResult<>(ActionResult.FAIL, binding);
 
         if (!SoulShards.CONFIG.getEntityList().isEnabled(binding.getBoundEntity()))
-            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+            return new TypedActionResult<>(ActionResult.FAIL, binding);
 
         if (!SoulShards.CONFIG.getBalance().requireRedstoneSignal()) {
             if (state.get(BlockSoulCage.POWERED) && binding.getTier().checkRedstone())
-                return new TypedActionResult<>(ActionResult.FAILURE, binding);
+                return new TypedActionResult<>(ActionResult.FAIL, binding);
         } else if (!state.get(BlockSoulCage.POWERED))
-            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+            return new TypedActionResult<>(ActionResult.FAIL, binding);
 
         if (binding.getTier().checkPlayer() && world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), 16, false) == null)
-            return new TypedActionResult<>(ActionResult.FAILURE, binding);
+            return new TypedActionResult<>(ActionResult.FAIL, binding);
 
         return new TypedActionResult<>(ActionResult.SUCCESS, binding);
     }
@@ -173,7 +173,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     }
 
     private boolean canSpawnInLight(LivingEntity entityLiving, BlockPos pos) {
-        return !(entityLiving instanceof Monster) || world.getLightLevel(LightType.BLOCK_LIGHT, pos) <= 8;
+        return !(entityLiving instanceof Monster) || world.getLightLevel(LightType.BLOCK, pos) <= 8;
     }
 
     private boolean hasReachedSpawnCap(LivingEntity living) {

@@ -1,13 +1,14 @@
 package info.tehnut.soulshards.api;
 
-import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 
+import java.util.ArrayList;
+
 public interface CageSpawnEvent {
 
-    HandlerArray<CageSpawnEvent> CAGE_SPAWN = new HandlerArray<>(CageSpawnEvent.class);
+    ArrayList<CageSpawnEvent> CAGE_SPAWN = new ArrayList<>();
 
     ActionResult onCageSpawn(IBinding binding, ItemStack shardStack, LivingEntity toSpawn);
 }

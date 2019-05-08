@@ -1,15 +1,16 @@
 package info.tehnut.soulshards.api;
 
-import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 
+import java.util.ArrayList;
+
 public class BindingEvent {
 
-    public static final HandlerArray<NewBinding> NEW_BINDING = new HandlerArray<>(NewBinding.class);
-    public static final HandlerArray<GainSouls> GAIN_SOULS = new HandlerArray<>(GainSouls.class);
-    public static final HandlerArray<GetEntityName> GET_ENTITY_NAME = new HandlerArray<>(GetEntityName.class);
+    public static final ArrayList<NewBinding> NEW_BINDING = new ArrayList<>();
+    public static final ArrayList<GainSouls> GAIN_SOULS = new ArrayList<>();
+    public static final ArrayList<GetEntityName> GET_ENTITY_NAME = new ArrayList<>();
 
     public interface NewBinding {
         TypedActionResult<IBinding> onNewBinding(LivingEntity entity, IBinding binding);

@@ -8,18 +8,14 @@ import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.MultiblockPattern;
 import info.tehnut.soulshards.core.data.Tier;
 import info.tehnut.soulshards.item.ItemSoulShard;
-import net.fabricmc.fabric.events.PlayerInteractionEvent;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sortme.ItemScatterer;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
@@ -28,19 +24,19 @@ import java.util.Set;
 public class EventHandler {
 
     public static void init() {
-        PlayerInteractionEvent.INTERACT_BLOCK.register((player, world, hand, pos, facing, hitX, hitY, hitZ) -> {
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             MultiblockPattern pattern = ConfigSoulShards.getMultiblock();
 
             ItemStack held = player.getStackInHand(hand);
             if (!ItemStack.areEqualIgnoreTags(pattern.getCatalyst(), held))
                 return ActionResult.PASS;
 
-            BlockState worldState = world.getBlockState(pos);
+            BlockState worldState = world.getBlockState(hitResult.getBlockPos());
             if (!pattern.isOriginBlock(worldState))
                 return ActionResult.PASS;
 
-            TypedActionResult<Set<BlockPos>> match = pattern.match(world, pos);
-            if (match.getResult() == ActionResult.FAILURE)
+            TypedActionResult<Set<BlockPos>> match = pattern.match(world, hitResult.getBlockPos());
+            if (match.getResult() == ActionResult.FAIL)
                 return match.getResult();
 
             match.getValue().forEach(matchedPos -> world.breakBlock(matchedPos, false));
@@ -85,7 +81,7 @@ public class EventHandler {
             if (mainHand.getItem() instanceof ISoulWeapon)
                 soulsGained += ((ISoulWeapon) mainHand.getItem()).getSoulBonus(mainHand, player, killed);
 
-            BindingEvent.GainSouls[] handlers = BindingEvent.GAIN_SOULS.getBackingArray();
+            BindingEvent.GainSouls[] handlers = BindingEvent.GAIN_SOULS.toArray(new BindingEvent.GainSouls[] {} );
             for (BindingEvent.GainSouls handler : handlers)
                 soulsGained = handler.getGainedSouls(killed, binding, soulsGained);
 
@@ -132,7 +128,7 @@ public class EventHandler {
 
     private static Identifier getEntityId(LivingEntity entity) {
         Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
-        BindingEvent.GetEntityName[] handlers = BindingEvent.GET_ENTITY_NAME.getBackingArray();
+        BindingEvent.GetEntityName[] handlers = BindingEvent.GET_ENTITY_NAME.toArray(new BindingEvent.GetEntityName[] {} );
         for (BindingEvent.GetEntityName handler : handlers) {
             Identifier newId = handler.getEntityName(entity, id);
             if (newId != null)
@@ -144,10 +140,10 @@ public class EventHandler {
 
     private static Binding getNewBinding(LivingEntity entity) {
         Binding binding = new Binding(null, 0);
-        BindingEvent.NewBinding[] handlers = BindingEvent.NEW_BINDING.getBackingArray();
+        BindingEvent.NewBinding[] handlers = BindingEvent.NEW_BINDING.toArray(new BindingEvent.NewBinding[] {} );
         for (BindingEvent.NewBinding handler : handlers) {
             TypedActionResult<IBinding> result = handler.onNewBinding(entity, binding);
-            if (result.getResult() == ActionResult.FAILURE)
+            if (result.getResult() == ActionResult.FAIL)
                 return null;
 
             if (result.getValue() != null)

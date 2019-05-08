@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public class MixinEntityLiving {
 
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Inject(method = "<clinit>", at = @At("RETURN"))
     private static void registerDataTracker(CallbackInfo callbackInfo) {
         SoulShards.cageBornTag = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     }

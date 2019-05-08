@@ -91,7 +91,7 @@ public class MultiblockPattern {
                 BlockPos offset = originBlock.add(x - origin.x, 0, y - origin.y);
                 BlockState state = world.getBlockState(offset);
                 if (!definition.get(line.charAt(x)).test(state))
-                    return new TypedActionResult<>(ActionResult.FAILURE, Collections.emptySet());
+                    return new TypedActionResult<>(ActionResult.FAIL, Collections.emptySet());
 
                 matched.add(offset);
             }
