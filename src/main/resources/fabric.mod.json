@@ -8,6 +8,9 @@
   "authors": [
     "TehNut"
   ],
+  "contributors": [
+    "BBoldt"
+  ],
 
   "license": "MIT",
   "icon": "assets/soulshards/icon.png",
@@ -25,5 +28,9 @@
   "requires": {
     "fabricloader": "=>0.4.0",
     "fabric": "*"
+  },
+  "waila:plugins": {
+    "id": "soulshards",
+    "initializer": "info.tehnut.soulshards.compat.waila.SoulShardsWailaPlugin"
   }
 }
