@@ -8,16 +8,15 @@ import info.tehnut.soulshards.core.RegistrarSoulShards;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.Tier;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.MobSpawnerBlock;
+import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.client.item.TooltipOptions;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sortme.MobSpawnerLogic;
 import net.minecraft.text.Style;
 import net.minecraft.text.TextComponent;
 import net.minecraft.text.TextFormat;
@@ -26,6 +25,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.World;
 
 import java.lang.invoke.MethodHandle;
@@ -39,7 +39,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
 
     static {
         try {
-            Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("method_8281");
+            Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("getEntityId");
             _getEntityName.setAccessible(true);
             GET_SPAWNER_ENTITY = MethodHandles.lookup().in(MobSpawnerLogic.class).unreflect(_getEntityName);
         } catch (Exception e) {
@@ -67,7 +67,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
         if (binding == null)
             return ActionResult.PASS;
 
-        if (state.getBlock() instanceof MobSpawnerBlock) {
+        if (state.getBlock() instanceof SpawnerBlock) {
             if (!SoulShards.CONFIG.getBalance().allowSpawnerAbsorption()) {
                 if (context.getPlayer() != null)
                     context.getPlayer().addChatMessage(new TranslatableTextComponent("chat.soulshards.absorb_disabled"), true);
@@ -87,7 +87,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
                     return ActionResult.PASS;
 
                 if (binding.getBoundEntity() == null || !binding.getBoundEntity().equals(entityId))
-                    return ActionResult.FAILURE;
+                    return ActionResult.FAIL;
 
                 updateBinding(context.getItemStack(), binding.addKills(SoulShards.CONFIG.getBalance().getAbsorptionBonus()));
                 context.getWorld().breakBlock(context.getBlockPos(), false);
@@ -97,7 +97,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
             }
         } else if (state.getBlock() == RegistrarSoulShards.SOUL_CAGE) {
             if (binding.getBoundEntity() == null)
-                return ActionResult.FAILURE;
+                return ActionResult.FAIL;
 
             TileEntitySoulCage cage = (TileEntitySoulCage) context.getWorld().getBlockEntity(context.getBlockPos());
             if (cage == null)
@@ -116,7 +116,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     @Override
-    public void buildTooltip(ItemStack stack, World world, List<TextComponent> tooltip, TooltipOptions options) {
+    public void buildTooltip(ItemStack stack, World world, List<TextComponent> tooltip, TooltipContext options) {
         Binding binding = getBinding(stack);
         if (binding == null)
             return;
@@ -137,7 +137,8 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     @Override
-    public void addStacksForDisplay(ItemGroup group, DefaultedList<ItemStack> items) {
+    public void appendItemsForGroup(ItemGroup group, DefaultedList<ItemStack> items)
+    {
         if (!isInItemGroup(group))
             return;
 
