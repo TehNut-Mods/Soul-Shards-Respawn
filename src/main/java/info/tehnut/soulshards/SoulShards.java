@@ -1,7 +1,7 @@
 package info.tehnut.soulshards;
 
 import com.google.gson.reflect.TypeToken;
-import info.tehnut.soulshards.core.ConfigSoulShards;
+import info.tehnut.soulshards.core.config.ConfigSoulShards;
 import info.tehnut.soulshards.core.EventHandler;
 import info.tehnut.soulshards.core.RegistrarSoulShards;
 import info.tehnut.soulshards.core.data.Tier;

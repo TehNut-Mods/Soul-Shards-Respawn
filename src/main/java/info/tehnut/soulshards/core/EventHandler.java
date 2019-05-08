@@ -4,6 +4,7 @@ import info.tehnut.soulshards.SoulShards;
 import info.tehnut.soulshards.api.BindingEvent;
 import info.tehnut.soulshards.api.IBinding;
 import info.tehnut.soulshards.api.ISoulWeapon;
+import info.tehnut.soulshards.core.config.ConfigSoulShards;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.MultiblockPattern;
 import info.tehnut.soulshards.core.data.Tier;
