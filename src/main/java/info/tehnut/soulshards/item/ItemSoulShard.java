@@ -39,7 +39,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
 
     static {
         try {
-            Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("getEntityId");
+            Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("method_8281");
             _getEntityName.setAccessible(true);
             GET_SPAWNER_ENTITY = MethodHandles.lookup().in(MobSpawnerLogic.class).unreflect(_getEntityName);
         } catch (Exception e) {
