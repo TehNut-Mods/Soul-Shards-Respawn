@@ -1,27 +1,29 @@
 {
+  "schemaVersion": 1,
   "id": "soulshards",
+  "version": "1.0.7",
+
   "name": "Soul Shards Respawn",
   "description": "Powerful spawners for any mob!",
-  "version": "1.0.6",
-  "license": "MIT",
-  "side": "universal",
-  "initializer": "info.tehnut.soulshards.SoulShards",
-  "links": {
-    "homepage": "https://minecraft.curseforge.com/projects/soul-shards-respawn",
-    "issues": "https://github.com/TehNut/Soul-Shards-Respawn/issues",
-    "sources": "https://github.com/TehNut/Soul-Shards-Respawn"
-  },
   "authors": [
     "TehNut"
   ],
-  "contributors": [
-    "BBoldt"
+
+  "license": "MIT",
+  "icon": "assets/soulshards/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "info.tehnut.soulshards.SoulShards"
+    ]
+  },
+  "mixins": [
+    "soulshards.common.json",
+    "soulshards.client.json"
   ],
   "requires": {
+    "fabricloader": "=>0.4.0",
     "fabric": "*"
-  },
-  "mixins": {
-    "common": "soulshards.common.json",
-    "client": "soulshards.client.json"
   }
 }
