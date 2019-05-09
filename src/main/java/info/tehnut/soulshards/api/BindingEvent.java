@@ -11,17 +11,15 @@ public class BindingEvent {
 
     public static final Event<NewBinding> NEW_BINDINGS = EventFactory.createArrayBacked(NewBinding.class,
             (listeners) -> (entity, binding) -> {
-                TypedActionResult<IBinding> result = new TypedActionResult<>(ActionResult.PASS, binding);
-
                 for(NewBinding newBinding : listeners) {
                     TypedActionResult<IBinding> currentResult = newBinding.onNewBinding(entity, binding);
 
                     if(currentResult.getResult() != ActionResult.PASS) {
-                        result = currentResult;
+                        return currentResult;
                     }
                 }
 
-                return result;
+                return new TypedActionResult<>(ActionResult.PASS, binding);
             }
 	);
 
