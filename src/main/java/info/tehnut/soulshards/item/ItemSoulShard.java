@@ -35,7 +35,7 @@ import java.util.List;
 
 public class ItemSoulShard extends Item implements ISoulShard {
 
-    private static final MethodHandle GET_SPAWNER_ENTITY;
+    private static MethodHandle GET_SPAWNER_ENTITY;
 
     static {
         try {
@@ -43,7 +43,15 @@ public class ItemSoulShard extends Item implements ISoulShard {
             _getEntityName.setAccessible(true);
             GET_SPAWNER_ENTITY = MethodHandles.lookup().in(MobSpawnerLogic.class).unreflect(_getEntityName);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            try {
+                Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("getEntityId");
+                _getEntityName.setAccessible(true);
+                GET_SPAWNER_ENTITY = MethodHandles.lookup().in(MobSpawnerLogic.class).unreflect(_getEntityName);
+            }
+            catch (Exception f)
+            {
+                f.printStackTrace();
+            }
         }
     }
 
