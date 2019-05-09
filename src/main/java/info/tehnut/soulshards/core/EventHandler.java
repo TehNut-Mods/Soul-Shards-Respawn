@@ -2,7 +2,6 @@ package info.tehnut.soulshards.core;
 
 import info.tehnut.soulshards.SoulShards;
 import info.tehnut.soulshards.api.BindingEvent;
-import info.tehnut.soulshards.api.IBinding;
 import info.tehnut.soulshards.api.ISoulWeapon;
 import info.tehnut.soulshards.core.config.ConfigSoulShards;
 import info.tehnut.soulshards.core.data.Binding;
@@ -82,9 +81,7 @@ public class EventHandler {
             if (mainHand.getItem() instanceof ISoulWeapon)
                 soulsGained += ((ISoulWeapon) mainHand.getItem()).getSoulBonus(mainHand, player, killed);
 
-            BindingEvent.GainSouls[] handlers = BindingEvent.GAIN_SOULS.toArray(new BindingEvent.GainSouls[] {} );
-            for (BindingEvent.GainSouls handler : handlers)
-                soulsGained = handler.getGainedSouls(killed, binding, soulsGained);
+            soulsGained = BindingEvent.GAIN_SOULS.invoker().getGainedSouls(killed, binding, soulsGained);
 
             if (binding.getBoundEntity() == null)
                 binding.setBoundEntity(entityId);
@@ -129,28 +126,11 @@ public class EventHandler {
 
     private static Identifier getEntityId(LivingEntity entity) {
         Identifier id = Registry.ENTITY_TYPE.getId(entity.getType());
-        BindingEvent.GetEntityName[] handlers = BindingEvent.GET_ENTITY_NAME.toArray(new BindingEvent.GetEntityName[] {} );
-        for (BindingEvent.GetEntityName handler : handlers) {
-            Identifier newId = handler.getEntityName(entity, id);
-            if (newId != null)
-                id = newId;
-        }
-
-        return id;
+        return BindingEvent.GET_ENTITY_ID.invoker().getEntityName(entity, id);
     }
 
     private static Binding getNewBinding(LivingEntity entity) {
         Binding binding = new Binding(null, 0);
-        BindingEvent.NewBinding[] handlers = BindingEvent.NEW_BINDING.toArray(new BindingEvent.NewBinding[] {} );
-        for (BindingEvent.NewBinding handler : handlers) {
-            TypedActionResult<IBinding> result = handler.onNewBinding(entity, binding);
-            if (result.getResult() == ActionResult.FAIL)
-                return null;
-
-            if (result.getValue() != null)
-                binding = (Binding) result.getValue();
-        }
-
-        return binding;
+        return (Binding) BindingEvent.NEW_BINDINGS.invoker().onNewBinding(entity, binding).getValue();
     }
 }
