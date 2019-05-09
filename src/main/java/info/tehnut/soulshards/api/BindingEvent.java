@@ -40,14 +40,13 @@ public class BindingEvent {
 
     public static final Event<GetEntityName> GET_ENTITY_ID = EventFactory.createArrayBacked(GetEntityName.class,
             (listeners) -> (entity, currentName) -> {
-                Identifier id = currentName;
 
                 for(GetEntityName getEntityName : listeners) {
                     Identifier identifier = getEntityName.getEntityName(entity, currentName);
-                    if(identifier != null) id = identifier;
+                    if(identifier != null) return identifier;
                 }
 
-                return id;
+                return currentName;
             });
 
     public interface NewBinding {
