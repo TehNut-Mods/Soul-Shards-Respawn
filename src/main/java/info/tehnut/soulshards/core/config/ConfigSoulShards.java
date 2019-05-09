@@ -14,14 +14,14 @@ public class ConfigSoulShards {
 
     private static MultiblockPattern multiblock;
 
-    private static ConfigBalance balance;
-    private static ConfigClient client;
-    private static ConfigEntityList entityList;
+    private ConfigBalance balance;
+    private ConfigClient client;
+    private ConfigEntityList entityList;
 
     private ConfigSoulShards(ConfigBalance balance, ConfigClient client, ConfigEntityList entityList) {
-        ConfigSoulShards.balance = balance;
-        ConfigSoulShards.client = client;
-        ConfigSoulShards.entityList = entityList;
+        this.balance = balance;
+        this.client = client;
+        this.entityList = entityList;
     }
 
     public ConfigSoulShards() {
