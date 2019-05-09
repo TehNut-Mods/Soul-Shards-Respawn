@@ -31,7 +31,7 @@ public class BindingEvent {
 
                 for (GainSouls gainSouls : listeners) {
                     int newSoulsGained = gainSouls.getGainedSouls(entity, binding, amount);
-                    if(newSoulsGained > 0) soulsGained = newSoulsGained;
+                    soulsGained+=newSoulsGained;
                 }
 
                 return soulsGained;
