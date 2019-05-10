@@ -7,6 +7,7 @@ import info.tehnut.soulshards.block.TileEntitySoulCage;
 import info.tehnut.soulshards.core.RegistrarSoulShards;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.Tier;
+import info.tehnut.soulshards.core.mixin.MobSpawnerLogicEntityId;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
@@ -25,35 +26,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.World;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class ItemSoulShard extends Item implements ISoulShard {
-
-    private static MethodHandle GET_SPAWNER_ENTITY;
-
-    static {
-        try {
-            Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("method_8281");
-            _getEntityName.setAccessible(true);
-            GET_SPAWNER_ENTITY = MethodHandles.lookup().in(MobSpawnerLogic.class).unreflect(_getEntityName);
-        } catch (Exception e) {
-            try {
-                Method _getEntityName = MobSpawnerLogic.class.getDeclaredMethod("getEntityId");
-                _getEntityName.setAccessible(true);
-                GET_SPAWNER_ENTITY = MethodHandles.lookup().in(MobSpawnerLogic.class).unreflect(_getEntityName);
-            }
-            catch (Exception f)
-            {
-                f.printStackTrace();
-            }
-        }
-    }
 
     public ItemSoulShard() {
         super(new Settings().stackSize(1).itemGroup(ItemGroup.MISC));
@@ -90,7 +67,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
                 return ActionResult.PASS;
 
             try {
-                Identifier entityId = (Identifier) GET_SPAWNER_ENTITY.bindTo(spawner.getLogic()).invoke();
+                Identifier entityId = ((MobSpawnerLogicEntityId) spawner).getEntityId();
                 if (!SoulShards.CONFIG.getEntityList().isEnabled(entityId))
                     return ActionResult.PASS;
 

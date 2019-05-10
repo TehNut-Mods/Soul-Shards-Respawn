@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "soulshards-refmap.json",
   "mixins": [
-    "MixinEntityLiving"
+    "MixinEntityLiving",
+    "MobSpawnerLogicEntityId"
   ],
   "injectors": {
     "defaultRequire": 1
