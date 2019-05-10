@@ -5,7 +5,7 @@ import info.tehnut.soulshards.SoulShards;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.Tier;
 import info.tehnut.soulshards.item.ItemSoulShard;
-import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
 
-    @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/FontRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("RETURN"))
-    private void renderShardFullness(FontRenderer font, ItemStack stack, int x, int y, String text, CallbackInfo callbackInfo) {
+    @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;II)V", at = @At("RETURN"))
+    private void renderShardFullness(TextRenderer textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
         if (!SoulShards.CONFIG.getClient().displayDurabilityBar())
             return;
 

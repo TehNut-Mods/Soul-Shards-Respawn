@@ -1,10 +1,9 @@
-package info.tehnut.soulshards.core;
+package info.tehnut.soulshards.core.config;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import info.tehnut.soulshards.core.data.MultiblockPattern;
 import net.minecraft.entity.EntityCategory;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -19,7 +18,7 @@ public class ConfigSoulShards {
     private ConfigClient client;
     private ConfigEntityList entityList;
 
-    public ConfigSoulShards(ConfigBalance balance, ConfigClient client, ConfigEntityList entityList) {
+    private ConfigSoulShards(ConfigBalance balance, ConfigClient client, ConfigEntityList entityList) {
         this.balance = balance;
         this.client = client;
         this.entityList = entityList;
@@ -160,7 +159,7 @@ public class ConfigSoulShards {
         private static Map<String, Boolean> getDefaults() {
             Map<String, Boolean> defaults = Maps.newHashMap();
             Registry.ENTITY_TYPE.stream()
-                    .filter(e -> e.getEntityClass() != EntityCategory.MISC)
+                    .filter(e -> e.getCategory() != EntityCategory.MISC)
                     .forEach(e -> {
                         String entityId = Registry.ENTITY_TYPE.getId(e).toString();
                         defaults.put(entityId, !DEFAULT_DISABLES.contains(entityId));

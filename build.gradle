@@ -23,11 +23,10 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${snapshot_version}"
-    mappings "net.fabricmc:yarn:${snapshot_version}.${mappings_version}"
+    mappings "net.fabricmc:yarn:${snapshot_version}+build.${mappings_version}"
     modCompile "net.fabricmc:fabric-loader:${loader_version}"
     modCompile "net.fabricmc:fabric:${api_version}"
     modCompile "mcp.mobius.waila:Hwyla:${waila_version}"
-    modCompile "info.tehnut.pluginloader:plugin-loader:${plugin_loader_version}"
 }
 
 task sourcesJar(type: Jar) {
