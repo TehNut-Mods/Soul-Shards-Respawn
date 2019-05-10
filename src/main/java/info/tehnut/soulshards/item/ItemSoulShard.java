@@ -67,7 +67,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
                 return ActionResult.PASS;
 
             try {
-                Identifier entityId = ((MobSpawnerLogicEntityId) spawner).getEntityId();
+                Identifier entityId = new Identifier(((MobSpawnerLogicEntityId) spawner).getSpawnEntry().getEntityTag().getString("id"));
                 if (!SoulShards.CONFIG.getEntityList().isEnabled(entityId))
                     return ActionResult.PASS;
 
