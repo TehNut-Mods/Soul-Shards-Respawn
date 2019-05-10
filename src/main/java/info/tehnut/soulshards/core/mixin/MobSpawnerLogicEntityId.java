@@ -1,12 +1,12 @@
 package info.tehnut.soulshards.core.mixin;
 
-import net.minecraft.world.MobSpawnerEntry;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.MobSpawnerLogic;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(MobSpawnerLogic.class)
 public interface MobSpawnerLogicEntityId {
-    @Accessor("spawnEntry")
-    MobSpawnerEntry getSpawnEntry();
+    @Invoker("getEntityId")
+    Identifier getEntityIdentifier();
 }
