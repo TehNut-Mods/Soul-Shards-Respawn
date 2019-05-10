@@ -10,16 +10,16 @@ public interface CageSpawnEvent {
 
     public static final Event<CageSpawnEvent> CAGE_SPAWN = EventFactory.createArrayBacked(CageSpawnEvent.class,
             (listeners) -> (binding, shardStack, toSpawn) -> {
-                for(CageSpawnEvent event : listeners) {
+                for (CageSpawnEvent event : listeners) {
                     ActionResult result = event.onCageSpawn(binding, shardStack, toSpawn);
-                    if(result != ActionResult.PASS) {
+                    if (result != ActionResult.PASS) {
                         return result;
                     }
                 }
 
                 return ActionResult.PASS;
             }
-            );
+    );
 
     ActionResult onCageSpawn(IBinding binding, ItemStack shardStack, LivingEntity toSpawn);
 }

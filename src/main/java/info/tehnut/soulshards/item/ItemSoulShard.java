@@ -122,8 +122,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     @Override
-    public void appendItemsForGroup(ItemGroup group, DefaultedList<ItemStack> items)
-    {
+    public void appendItemsForGroup(ItemGroup group, DefaultedList<ItemStack> items) {
         if (!isInItemGroup(group))
             return;
 

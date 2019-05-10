@@ -98,14 +98,12 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public void onBlockAdded(BlockState blockState_1, World world_1, BlockPos blockPos_1, BlockState blockState_2, boolean boolean_1)
-    {
+    public void onBlockAdded(BlockState blockState_1, World world_1, BlockPos blockPos_1, BlockState blockState_2, boolean boolean_1) {
         handleRedstoneChange(world_1, blockState_1, blockPos_1);
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos1, Block block_1, BlockPos blockPos_2, boolean boolean_1)
-    {
+    public void neighborUpdate(BlockState state, World world, BlockPos pos1, Block block_1, BlockPos blockPos_2, boolean boolean_1) {
         handleRedstoneChange(world, state, pos1);
     }
 

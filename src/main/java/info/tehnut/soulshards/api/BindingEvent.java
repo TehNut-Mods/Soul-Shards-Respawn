@@ -11,17 +11,17 @@ public class BindingEvent {
 
     public static final Event<NewBinding> NEW_BINDINGS = EventFactory.createArrayBacked(NewBinding.class,
             (listeners) -> (entity, binding) -> {
-                for(NewBinding newBinding : listeners) {
+                for (NewBinding newBinding : listeners) {
                     TypedActionResult<IBinding> currentResult = newBinding.onNewBinding(entity, binding);
 
-                    if(currentResult.getResult() != ActionResult.PASS) {
+                    if (currentResult.getResult() != ActionResult.PASS) {
                         return currentResult;
                     }
                 }
 
                 return new TypedActionResult<>(ActionResult.PASS, binding);
             }
-	);
+    );
 
     public static final Event<GainSouls> GAIN_SOULS = EventFactory.createArrayBacked(GainSouls.class,
             (listeners) -> (entity, binding, amount) -> {
@@ -29,19 +29,19 @@ public class BindingEvent {
 
                 for (GainSouls gainSouls : listeners) {
                     int newSoulsGained = gainSouls.getGainedSouls(entity, binding, amount);
-                    soulsGained+=newSoulsGained;
+                    soulsGained += newSoulsGained;
                 }
 
                 return soulsGained;
             }
-            );
+    );
 
     public static final Event<GetEntityName> GET_ENTITY_ID = EventFactory.createArrayBacked(GetEntityName.class,
             (listeners) -> (entity, currentName) -> {
 
-                for(GetEntityName getEntityName : listeners) {
+                for (GetEntityName getEntityName : listeners) {
                     Identifier identifier = getEntityName.getEntityName(entity, currentName);
-                    if(identifier != null) return identifier;
+                    if (identifier != null) return identifier;
                 }
 
                 return currentName;

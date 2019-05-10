@@ -7,8 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(MobSpawnerLogic.class)
-public interface MobSpawnerLogicEntityId
-{
+public interface MobSpawnerLogicEntityId {
     @Nullable
     @Invoker("getEntityId")
     Identifier getEntityId();
