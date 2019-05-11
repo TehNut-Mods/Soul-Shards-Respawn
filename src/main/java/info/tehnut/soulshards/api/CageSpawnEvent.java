@@ -8,7 +8,7 @@ import net.minecraft.util.ActionResult;
 
 public interface CageSpawnEvent {
 
-    public static final Event<CageSpawnEvent> CAGE_SPAWN = EventFactory.createArrayBacked(CageSpawnEvent.class,
+    Event<CageSpawnEvent> CAGE_SPAWN = EventFactory.createArrayBacked(CageSpawnEvent.class,
             (listeners) -> (binding, shardStack, toSpawn) -> {
                 for (CageSpawnEvent event : listeners) {
                     ActionResult result = event.onCageSpawn(binding, shardStack, toSpawn);

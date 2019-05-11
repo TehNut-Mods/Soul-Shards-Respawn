@@ -45,7 +45,8 @@ public class BindingEvent {
                 }
 
                 return currentName;
-            });
+            }
+    );
 
     public interface NewBinding {
         TypedActionResult<IBinding> onNewBinding(LivingEntity entity, IBinding binding);

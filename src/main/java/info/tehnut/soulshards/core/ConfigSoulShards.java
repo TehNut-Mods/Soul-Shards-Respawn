@@ -1,4 +1,4 @@
-package info.tehnut.soulshards.core.config;
+package info.tehnut.soulshards.core;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
