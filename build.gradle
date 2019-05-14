@@ -1,6 +1,6 @@
 plugins {
     id "com.matthewprenger.cursegradle" version "1.1.2"
-    id 'fabric-loom' version '0.2.0-SNAPSHOT'
+    id 'fabric-loom' version '0.2.2-SNAPSHOT'
     id "maven-publish"
 }
 
@@ -25,7 +25,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${snapshot_version}"
     mappings "net.fabricmc:yarn:${snapshot_version}+build.${mappings_version}"
     modCompile "net.fabricmc:fabric-loader:${loader_version}"
-    modCompile "net.fabricmc:fabric:${api_version}"
+    modCompile "net.fabricmc.fabric-api:fabric-api:${api_version}"
     modCompile "mcp.mobius.waila:Hwyla:${waila_version}"
 }
 

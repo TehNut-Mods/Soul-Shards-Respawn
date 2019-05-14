@@ -115,7 +115,7 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
 
     @Override
     protected void appendProperties(StateFactory.Builder<Block, BlockState> factory) {
-        factory.with(ACTIVE, POWERED);
+        factory.add(ACTIVE, POWERED);
     }
 
     @Override

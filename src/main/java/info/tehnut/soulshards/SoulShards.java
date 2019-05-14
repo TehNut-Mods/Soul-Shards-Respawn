@@ -28,6 +28,6 @@ public class SoulShards implements ModInitializer {
         RegistrarSoulShards.registerItems(Registry.ITEM);
         RegistrarSoulShards.registerEnchantments(Registry.ENCHANTMENT);
         EventHandler.init();
-        GameRules.getKeys().put("allowCageSpawns", new GameRules.Key("true", GameRules.Type.BOOLEAN));
+        GameRules.getKeys().put("allowCageSpawns", new GameRules.Key("true", GameRules.Type.BOOLEAN_VALUE));
     }
 }

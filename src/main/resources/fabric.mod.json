@@ -10,7 +10,8 @@
   ],
   "contributors": [
     "BBoldt",
-    "Draylar"
+    "Draylar",
+    "Shnupbups"
   ],
 
   "license": "MIT",
@@ -23,8 +24,7 @@
     ]
   },
   "mixins": [
-    "soulshards.common.json",
-    "soulshards.client.json"
+    "soulshards.mixins.json"
   ],
   "requires": {
     "fabricloader": "=>0.4.0",

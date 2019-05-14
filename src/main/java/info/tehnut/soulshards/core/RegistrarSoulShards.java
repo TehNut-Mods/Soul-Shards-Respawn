@@ -19,7 +19,7 @@ public class RegistrarSoulShards {
 
     public static final Block SOUL_CAGE = new BlockSoulCage();
 
-    public static final BlockEntityType<TileEntitySoulCage> SOUL_CAGE_TE = BlockEntityType.Builder.create(TileEntitySoulCage::new).build(null);
+    public static final BlockEntityType<TileEntitySoulCage> SOUL_CAGE_TE = BlockEntityType.Builder.create(TileEntitySoulCage::new, SOUL_CAGE).build(null);
 
     public static final Item SOUL_SHARD = new ItemSoulShard();
     public static final Item VILE_SWORD = new ItemVileSword();
