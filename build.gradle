@@ -80,6 +80,10 @@ curseforge {
         addArtifact sourcesJar
         addArtifact apiJar
     }
+
+    options {
+        debug = true
+    }
 }
 
 String getChangelogText() {
