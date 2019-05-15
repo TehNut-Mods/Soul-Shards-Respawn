@@ -8,6 +8,7 @@ import info.tehnut.soulshards.core.RegistrarSoulShards;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.Tier;
 import info.tehnut.soulshards.core.mixin.MobSpawnerLogicEntityId;
+import net.minecraft.ChatFormat;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
@@ -18,10 +19,9 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TextFormat;
-import net.minecraft.text.TranslatableTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
@@ -55,7 +55,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
         if (state.getBlock() instanceof SpawnerBlock) {
             if (!SoulShards.CONFIG.getBalance().allowSpawnerAbsorption()) {
                 if (context.getPlayer() != null)
-                    context.getPlayer().addChatMessage(new TranslatableTextComponent("chat.soulshards.absorb_disabled"), true);
+                    context.getPlayer().addChatMessage(new TranslatableComponent("chat.soulshards.absorb_disabled"), true);
                 return ActionResult.PASS;
             }
 
@@ -101,24 +101,24 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     @Override
-    public void buildTooltip(ItemStack stack, World world, List<TextComponent> tooltip, TooltipContext options) {
+    public void buildTooltip(ItemStack stack, World world, List<Component> tooltip, TooltipContext options) {
         Binding binding = getBinding(stack);
         if (binding == null)
             return;
 
-        Style greyColor = new Style().setColor(TextFormat.GRAY);
+        Style greyColor = new Style().setColor(ChatFormat.GRAY);
         if (binding.getBoundEntity() != null) {
             EntityType entityEntry = Registry.ENTITY_TYPE.get(binding.getBoundEntity());
             if (entityEntry != null)
-                tooltip.add(new TranslatableTextComponent("tooltip.soulshards.bound", entityEntry.getTextComponent()).setStyle(greyColor));
+                tooltip.add(new TranslatableComponent("tooltip.soulshards.bound", entityEntry.getTextComponent()).setStyle(greyColor));
             else
-                tooltip.add(new TranslatableTextComponent("tooltip.soulshards.bound", binding.getBoundEntity().toString()).setStyle(new Style().setColor(TextFormat.RED)));
+                tooltip.add(new TranslatableComponent("tooltip.soulshards.bound", binding.getBoundEntity().toString()).setStyle(new Style().setColor(ChatFormat.RED)));
         }
 
-        tooltip.add(new TranslatableTextComponent("tooltip.soulshards.tier", binding.getTier().getIndex()).setStyle(greyColor));
-        tooltip.add(new TranslatableTextComponent("tooltip.soulshards.kills", binding.getKills()).setStyle(greyColor));
+        tooltip.add(new TranslatableComponent("tooltip.soulshards.tier", binding.getTier().getIndex()).setStyle(greyColor));
+        tooltip.add(new TranslatableComponent("tooltip.soulshards.kills", binding.getKills()).setStyle(greyColor));
         if (options.isAdvanced() && binding.getOwner() != null)
-            tooltip.add(new TranslatableTextComponent("tooltip.soulshards.owner", binding.getOwner().toString()).setStyle(greyColor));
+            tooltip.add(new TranslatableComponent("tooltip.soulshards.owner", binding.getOwner().toString()).setStyle(greyColor));
     }
 
     @Override

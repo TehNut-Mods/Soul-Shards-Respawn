@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "soulshards",
-  "version": "1.0.7",
+  "version": "1.0.8",
 
   "name": "Soul Shards Respawn",
   "description": "Powerful spawners for any mob!",
@@ -10,7 +10,8 @@
   ],
   "contributors": [
     "BBoldt",
-    "Draylar"
+    "Draylar",
+    "Shnupbups"
   ],
 
   "license": "MIT",
@@ -23,8 +24,7 @@
     ]
   },
   "mixins": [
-    "soulshards.common.json",
-    "soulshards.client.json"
+    "soulshards.mixins.json"
   ],
   "requires": {
     "fabricloader": "=>0.4.0",

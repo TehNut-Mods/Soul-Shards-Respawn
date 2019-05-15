@@ -79,7 +79,7 @@ public class EventHandler {
             if (binding == null)
                 return;
 
-            ItemStack mainHand = player.getStackInHand(Hand.MAIN);
+            ItemStack mainHand = player.getStackInHand(Hand.MAIN_HAND);
             int soulsGained = 1 + EnchantmentHelper.getLevel(RegistrarSoulShards.SOUL_STEALER, mainHand);
             if (mainHand.getItem() instanceof ISoulWeapon)
                 soulsGained += ((ISoulWeapon) mainHand.getItem()).getSoulBonus(mainHand, player, killed);
@@ -98,7 +98,7 @@ public class EventHandler {
 
     private static ItemStack getFirstShard(PlayerEntity player, Identifier entityId) {
         // Checks the offhand first
-        ItemStack shardItem = player.getStackInHand(Hand.OFF);
+        ItemStack shardItem = player.getStackInHand(Hand.OFF_HAND);
         // If offhand isn't a shard, loop through the hotbar
         if (shardItem.isEmpty() || !(shardItem.getItem() instanceof ItemSoulShard)) {
             for (int i = 0; i < 9; i++) {
