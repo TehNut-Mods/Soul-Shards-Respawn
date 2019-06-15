@@ -13,7 +13,7 @@ public class ItemVileSword extends SwordItem implements ISoulWeapon {
     public static final ToolMaterial MATERIAL_VILE = new MaterialVile();
 
     public ItemVileSword() {
-        super(MATERIAL_VILE, 3, -2.4F, new Settings().itemGroup(ItemGroup.COMBAT));
+        super(MATERIAL_VILE, 3, -2.4F, new Settings().group(ItemGroup.COMBAT));
     }
 
     @Override
@@ -35,8 +35,8 @@ public class ItemVileSword extends SwordItem implements ISoulWeapon {
         }
 
         @Override
-        public float getBlockBreakingSpeed() {
-            return ToolMaterials.IRON.getBlockBreakingSpeed();
+        public float getMiningSpeed() {
+            return ToolMaterials.IRON.getMiningSpeed();
         }
 
         @Override

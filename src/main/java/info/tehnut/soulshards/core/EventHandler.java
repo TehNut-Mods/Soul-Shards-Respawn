@@ -31,7 +31,7 @@ public class EventHandler {
             MultiblockPattern pattern = ConfigSoulShards.getMultiblock();
 
             ItemStack held = player.getStackInHand(hand);
-            if (!ItemStack.areEqualIgnoreTags(pattern.getCatalyst(), held))
+            if (!ItemStack.areItemsEqual(pattern.getCatalyst(), held))
                 return ActionResult.PASS;
 
             BlockState worldState = world.getBlockState(hitResult.getBlockPos());
@@ -43,7 +43,7 @@ public class EventHandler {
                 return match.getResult();
 
             match.getValue().forEach(matchedPos -> world.breakBlock(matchedPos, false));
-            held.subtractAmount(1);
+            held.decrement(1);
             ItemStack shardStack = new ItemStack(RegistrarSoulShards.SOUL_SHARD);
             if (!player.inventory.insertStack(shardStack))
                 ItemScatterer.spawn(world, player.x, player.y, player.z, shardStack);

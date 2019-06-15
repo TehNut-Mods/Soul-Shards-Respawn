@@ -8,7 +8,6 @@ import info.tehnut.soulshards.core.RegistrarSoulShards;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.Tier;
 import info.tehnut.soulshards.core.mixin.MobSpawnerLogicEntityId;
-import net.minecraft.ChatFormat;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
@@ -19,11 +18,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DefaultedList;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -33,10 +33,10 @@ import java.util.List;
 public class ItemSoulShard extends Item implements ISoulShard {
 
     public ItemSoulShard() {
-        super(new Settings().stackSize(1).itemGroup(ItemGroup.MISC));
+        super(new Settings().maxCount(1).group(ItemGroup.MISC));
 
-        addProperty(new Identifier(SoulShards.MODID, "bound"), (stack, worldIn, entityIn) -> getBinding(stack) != null ? 1.0F : 0.0F);
-        addProperty(new Identifier(SoulShards.MODID, "tier"), (stack, world, entity) -> {
+        addPropertyGetter(new Identifier(SoulShards.MODID, "bound"), (stack, worldIn, entityIn) -> getBinding(stack) != null ? 1.0F : 0.0F);
+        addPropertyGetter(new Identifier(SoulShards.MODID, "tier"), (stack, world, entity) -> {
             Binding binding = getBinding(stack);
             if (binding == null)
                 return 0F;
@@ -48,14 +48,14 @@ public class ItemSoulShard extends Item implements ISoulShard {
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState state = context.getWorld().getBlockState(context.getBlockPos());
-        Binding binding = getBinding(context.getItemStack());
+        Binding binding = getBinding(context.getStack());
         if (binding == null)
             return ActionResult.PASS;
 
         if (state.getBlock() instanceof SpawnerBlock) {
             if (!SoulShards.CONFIG.getBalance().allowSpawnerAbsorption()) {
                 if (context.getPlayer() != null)
-                    context.getPlayer().addChatMessage(new TranslatableComponent("chat.soulshards.absorb_disabled"), true);
+                    context.getPlayer().addChatMessage(new TranslatableText("chat.soulshards.absorb_disabled"), true);
                 return ActionResult.PASS;
             }
 
@@ -74,7 +74,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
                 if (binding.getBoundEntity() == null || !binding.getBoundEntity().equals(entityId))
                     return ActionResult.FAIL;
 
-                updateBinding(context.getItemStack(), binding.addKills(SoulShards.CONFIG.getBalance().getAbsorptionBonus()));
+                updateBinding(context.getStack(), binding.addKills(SoulShards.CONFIG.getBalance().getAbsorptionBonus()));
                 context.getWorld().breakBlock(context.getBlockPos(), false);
                 return ActionResult.SUCCESS;
             } catch (Throwable e) {
@@ -89,9 +89,9 @@ public class ItemSoulShard extends Item implements ISoulShard {
                 return ActionResult.PASS;
 
             ItemStack cageStack = cage.getInventory().getInvStack(0);
-            if (cageStack.isEmpty() && cage.getInventory().isValidInvStack(0, context.getItemStack())) {
-                cage.getInventory().setInvStack(0, context.getItemStack().copy());
-                context.getItemStack().subtractAmount(1);
+            if (cageStack.isEmpty() && cage.getInventory().isValidInvStack(0, context.getStack())) {
+                cage.getInventory().setInvStack(0, context.getStack().copy());
+                context.getStack().decrement(1);
                 cage.markDirty();
                 return ActionResult.SUCCESS;
             }
@@ -101,29 +101,29 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     @Override
-    public void buildTooltip(ItemStack stack, World world, List<Component> tooltip, TooltipContext options) {
+    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext options) {
         Binding binding = getBinding(stack);
         if (binding == null)
             return;
 
-        Style greyColor = new Style().setColor(ChatFormat.GRAY);
+        Style greyColor = new Style().setColor(Formatting.GRAY);
         if (binding.getBoundEntity() != null) {
             EntityType entityEntry = Registry.ENTITY_TYPE.get(binding.getBoundEntity());
             if (entityEntry != null)
-                tooltip.add(new TranslatableComponent("tooltip.soulshards.bound", entityEntry.getTextComponent()).setStyle(greyColor));
+                tooltip.add(new TranslatableText("tooltip.soulshards.bound", entityEntry.getName()).setStyle(greyColor));
             else
-                tooltip.add(new TranslatableComponent("tooltip.soulshards.bound", binding.getBoundEntity().toString()).setStyle(new Style().setColor(ChatFormat.RED)));
+                tooltip.add(new TranslatableText("tooltip.soulshards.bound", binding.getBoundEntity().toString()).setStyle(new Style().setColor(Formatting.RED)));
         }
 
-        tooltip.add(new TranslatableComponent("tooltip.soulshards.tier", binding.getTier().getIndex()).setStyle(greyColor));
-        tooltip.add(new TranslatableComponent("tooltip.soulshards.kills", binding.getKills()).setStyle(greyColor));
+        tooltip.add(new TranslatableText("tooltip.soulshards.tier", binding.getTier().getIndex()).setStyle(greyColor));
+        tooltip.add(new TranslatableText("tooltip.soulshards.kills", binding.getKills()).setStyle(greyColor));
         if (options.isAdvanced() && binding.getOwner() != null)
-            tooltip.add(new TranslatableComponent("tooltip.soulshards.owner", binding.getOwner().toString()).setStyle(greyColor));
+            tooltip.add(new TranslatableText("tooltip.soulshards.owner", binding.getOwner().toString()).setStyle(greyColor));
     }
 
     @Override
-    public void appendItemsForGroup(ItemGroup group, DefaultedList<ItemStack> items) {
-        if (!isInItemGroup(group))
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> items) {
+        if (!isIn(group))
             return;
 
         items.add(new ItemStack(this));

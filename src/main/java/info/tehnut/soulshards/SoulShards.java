@@ -19,6 +19,7 @@ public class SoulShards implements ModInitializer {
     public static final String MODID = "soulshards";
     public static final ConfigSoulShards CONFIG = JsonUtil.fromJson(TypeToken.get(ConfigSoulShards.class), new File(FabricLoader.getInstance().getConfigDirectory(), MODID + "/" + MODID + ".json"), new ConfigSoulShards());
     public static TrackedData<Boolean> cageBornTag;
+    public static GameRules.RuleKey<GameRules.BooleanRule> allowCageSpawns;
 
     @Override
     public void onInitialize() {
@@ -28,6 +29,5 @@ public class SoulShards implements ModInitializer {
         RegistrarSoulShards.registerItems(Registry.ITEM);
         RegistrarSoulShards.registerEnchantments(Registry.ENCHANTMENT);
         EventHandler.init();
-        GameRules.getKeys().put("allowCageSpawns", new GameRules.Key("true", GameRules.Type.BOOLEAN_VALUE));
     }
 }

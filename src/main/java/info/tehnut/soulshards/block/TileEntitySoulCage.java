@@ -20,7 +20,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.LightType;
@@ -124,8 +124,9 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     }
 
     private TypedActionResult<Binding> canSpawn() {
-        if (!world.getServer().getWorld(DimensionType.OVERWORLD).getGameRules().getBoolean("allowCageSpawns"))
-            return new TypedActionResult<>(ActionResult.FAIL, null);
+        // TODO mojang pls
+//        if (!world.getServer().getWorld(DimensionType.OVERWORLD).getGameRules().getBoolean(SoulShards.allowCageSpawns))
+//            return new TypedActionResult<>(ActionResult.FAIL, null);
 
         BlockState state = world.getBlockState(pos);
         if (state.getBlock() != RegistrarSoulShards.SOUL_CAGE)
@@ -173,7 +174,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     }
 
     private boolean hasReachedSpawnCap(LivingEntity living) {
-        BoundingBox box = new BoundingBox(getPos().getX() - 16, getPos().getY() - 16, getPos().getZ() - 16, getPos().getX() + 16, getPos().getY() + 16, getPos().getZ() + 16);
+        Box box = new Box(getPos().getX() - 16, getPos().getY() - 16, getPos().getZ() - 16, getPos().getX() + 16, getPos().getY() + 16, getPos().getZ() + 16);
 
         int mobCount = world.getEntities(living.getClass(), box, e -> e != null && e.getDataTracker().get(SoulShards.cageBornTag)).size();
         return mobCount >= SoulShards.CONFIG.getBalance().getSpawnCap();

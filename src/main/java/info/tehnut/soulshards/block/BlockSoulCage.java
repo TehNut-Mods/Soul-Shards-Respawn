@@ -22,8 +22,8 @@ import java.util.Random;
 
 public class BlockSoulCage extends Block implements BlockEntityProvider {
 
-    public static final Property<Boolean> ACTIVE = BooleanProperty.create("active");
-    public static final Property<Boolean> POWERED = BooleanProperty.create("powered");
+    public static final Property<Boolean> ACTIVE = BooleanProperty.of("active");
+    public static final Property<Boolean> POWERED = BooleanProperty.of("powered");
 
     public BlockSoulCage() {
         super(Settings.copy(Blocks.SPAWNER));

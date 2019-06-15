@@ -23,9 +23,9 @@ public class RegistrarSoulShards {
 
     public static final Item SOUL_SHARD = new ItemSoulShard();
     public static final Item VILE_SWORD = new ItemVileSword();
-    public static final Item CORRUPTED_ESSENCE = new Item(new Item.Settings().itemGroup(ItemGroup.MISC));
-    public static final Item CORRUPTED_INGOT = new Item(new Item.Settings().itemGroup(ItemGroup.MISC));
-    public static final Item VILE_DUST = new Item(new Item.Settings().itemGroup(ItemGroup.MISC));
+    public static final Item CORRUPTED_ESSENCE = new Item(new Item.Settings().group(ItemGroup.MISC));
+    public static final Item CORRUPTED_INGOT = new Item(new Item.Settings().group(ItemGroup.MISC));
+    public static final Item VILE_DUST = new Item(new Item.Settings().group(ItemGroup.MISC));
 
     public static final Enchantment SOUL_STEALER = new EnchantmentSoulStealer();
 
@@ -35,7 +35,7 @@ public class RegistrarSoulShards {
     }
 
     public static void registerItems(Registry<Item> registry) {
-        Registry.register(registry, new Identifier(SoulShards.MODID, "soul_cage"), new BlockItem(SOUL_CAGE, new Item.Settings().itemGroup(ItemGroup.MISC)));
+        Registry.register(registry, new Identifier(SoulShards.MODID, "soul_cage"), new BlockItem(SOUL_CAGE, new Item.Settings().group(ItemGroup.MISC)));
         Registry.register(registry, new Identifier(SoulShards.MODID, "soul_shard"), SOUL_SHARD);
         Registry.register(registry, new Identifier(SoulShards.MODID, "vile_sword"), VILE_SWORD);
         Registry.register(registry, new Identifier(SoulShards.MODID, "corrupted_essence"), CORRUPTED_ESSENCE);
