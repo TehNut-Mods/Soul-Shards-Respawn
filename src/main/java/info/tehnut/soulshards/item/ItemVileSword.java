@@ -26,7 +26,7 @@ public class ItemVileSword extends SwordItem implements ISoulWeapon {
         private final Lazy<Ingredient> ingredient;
 
         public MaterialVile() {
-            this.ingredient = new Lazy<>(() -> Ingredient.ofStacks(new ItemStack(RegistrarSoulShards.CORRUPTED_INGOT)));
+            this.ingredient = new Lazy<>(() -> Ingredient.ofItems(RegistrarSoulShards.CORRUPTED_INGOT));
         }
 
         @Override
