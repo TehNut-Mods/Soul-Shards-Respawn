@@ -52,7 +52,7 @@ public class EventHandler {
 
         if (event.getSource().getTrueSource() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
-            if (player instanceof FakePlayer)
+            if (player instanceof FakePlayer && !SoulShards.CONFIG.allowFakePlayers())
                 return;
 
             BindingEvent.GetEntityName getEntityName = new BindingEvent.GetEntityName(event.getEntityLiving());
