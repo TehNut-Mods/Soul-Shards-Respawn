@@ -3,7 +3,6 @@ package info.tehnut.soulshards.block;
 import info.tehnut.soulshards.core.data.Binding;
 import info.tehnut.soulshards.core.data.Tier;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,7 +15,6 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import java.util.Random;
