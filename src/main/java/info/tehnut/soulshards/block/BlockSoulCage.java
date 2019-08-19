@@ -15,7 +15,6 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -52,11 +51,16 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
         return true;
     }
 
+
     @Override
-    public void onBroken(IWorld world, BlockPos pos, BlockState state) {
-        TileEntitySoulCage cage = (TileEntitySoulCage) world.getBlockEntity(pos);
-        if (cage != null)
-            ItemScatterer.spawn(world.getWorld(), pos, cage.inventory);
+    public void onBlockRemoved(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean boolean_1) {
+        if (this.hasBlockEntity() && blockState.getBlock() != blockState2.getBlock()) {
+            TileEntitySoulCage cage = (TileEntitySoulCage) world.getBlockEntity(blockPos);
+            if (cage != null)
+                ItemScatterer.spawn(world.getWorld(), blockPos, cage.inventory);
+        }
+
+        super.onBlockRemoved(blockState, world, blockPos, blockState2, boolean_1);
     }
 
     @Override
