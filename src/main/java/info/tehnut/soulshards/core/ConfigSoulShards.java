@@ -71,20 +71,22 @@ public class ConfigSoulShards {
         private boolean countCageBornForShard;
         private boolean requireOwnerOnline;
         private boolean requireRedstoneSignal;
+        private boolean allowShardCombination;
         private int spawnCap;
 
-        public ConfigBalance(boolean allowSpawnerAbsorption, int absorptionBonus, boolean allowBossSpawns, boolean countCageBornForShard, boolean requireOwnerOnline, boolean requireRedstoneSignal, int spawnCap) {
+        public ConfigBalance(boolean allowSpawnerAbsorption, int absorptionBonus, boolean allowBossSpawns, boolean countCageBornForShard, boolean requireOwnerOnline, boolean requireRedstoneSignal, boolean allowShardCombination, int spawnCap) {
             this.allowSpawnerAbsorption = allowSpawnerAbsorption;
             this.absorptionBonus = absorptionBonus;
             this.allowBossSpawns = allowBossSpawns;
             this.countCageBornForShard = countCageBornForShard;
             this.requireOwnerOnline = requireOwnerOnline;
             this.requireRedstoneSignal = requireRedstoneSignal;
+            this.allowShardCombination = allowShardCombination;
             this.spawnCap = spawnCap;
         }
 
         public ConfigBalance() {
-            this(true, 200, false, false, false, false, 32);
+            this(true, 200, false, false, false, false, true, 32);
         }
 
         public boolean allowSpawnerAbsorption() {
@@ -109,6 +111,10 @@ public class ConfigSoulShards {
 
         public boolean requireRedstoneSignal() {
             return requireRedstoneSignal;
+        }
+
+        public boolean allowShardCombination() {
+            return allowShardCombination;
         }
 
         public int getSpawnCap() {
