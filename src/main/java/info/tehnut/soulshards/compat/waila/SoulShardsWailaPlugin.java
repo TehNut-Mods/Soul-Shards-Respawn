@@ -35,7 +35,7 @@ public class SoulShardsWailaPlugin implements IWailaPlugin {
         registrar.registerComponentProvider(new IComponentProvider() {
             @Override
             public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
-                if (!accessor.getServerData().containsKey("binding"))
+                if (!accessor.getServerData().contains("binding"))
                     return;
 
                 Binding binding = new Binding(accessor.getServerData().getCompound("binding"));

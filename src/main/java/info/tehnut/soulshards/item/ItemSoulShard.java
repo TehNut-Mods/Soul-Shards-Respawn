@@ -41,7 +41,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
             if (binding == null)
                 return 0F;
 
-            return Float.valueOf("0." + Tier.INDEXED.indexOf(binding.getTier()));
+            return Float.parseFloat("0." + Tier.INDEXED.indexOf(binding.getTier()));
         });
     }
 

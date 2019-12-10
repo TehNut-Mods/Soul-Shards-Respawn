@@ -84,16 +84,16 @@ public class Binding implements IBinding, INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if (nbt.containsKey("bound"))
+        if (nbt.contains("bound"))
             this.boundEntity = new Identifier(nbt.getString("bound"));
-        if (nbt.containsKey("owner"))
+        if (nbt.contains("owner"))
             this.owner = UUID.fromString(nbt.getString("owner"));
         this.kills = nbt.getInt("kills");
     }
 
     public static Binding fromNBT(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.containsKey("binding"))
+        if (tag == null || !tag.contains("binding"))
             return null;
 
         return new Binding(tag.getCompound("binding"));

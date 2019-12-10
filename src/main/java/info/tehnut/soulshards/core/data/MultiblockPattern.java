@@ -115,7 +115,7 @@ public class MultiblockPattern {
         }
 
         public Slot(Block block) {
-            this(block.getStateFactory().getStates().toArray(new BlockState[0]));
+            this(block.getStateManager().getStates().toArray(new BlockState[0]));
         }
 
         @Override
@@ -153,16 +153,16 @@ public class MultiblockPattern {
                     if (json.has("states")) {
                         JsonObject stateObject = json.getAsJsonObject("states");
                         for (Map.Entry<String, JsonElement> e : stateObject.entrySet()) {
-                            Property property = block.getStateFactory().getProperty(e.getKey());
+                            Property property = block.getStateManager().getProperty(e.getKey());
                             if (property != null) {
                                 String valueString = e.getValue().getAsString();
-                                Comparable value = (Comparable) property.getValue(valueString).get();
+                                Comparable value = (Comparable) property.parse(valueString).get();
                                 state = state.with(property, value);
                             }
                         }
                         states.add(state);
                     } else {
-                        states.addAll(block.getStateFactory().getStates());
+                        states.addAll(block.getStateManager().getStates());
                     }
                 }
             }

@@ -68,7 +68,7 @@ public class TileEntitySoulCage extends BlockEntity implements Tickable {
     public void fromTag(CompoundTag tag) {
         super.fromTag(tag);
 
-        if (tag.containsKey("shard"))
+        if (tag.contains("shard"))
             inventory.setInvStack(0, ItemStack.fromTag(tag.getCompound("shard")));
     }
 

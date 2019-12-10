@@ -21,6 +21,9 @@
   "entrypoints": {
     "main": [
       "info.tehnut.soulshards.SoulShards"
+    ],
+    "client": [
+      "info.tehnut.soulshards.SoulShardsClient"
     ]
   },
   "mixins": [

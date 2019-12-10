@@ -46,7 +46,7 @@ public class EventHandler {
             held.decrement(1);
             ItemStack shardStack = new ItemStack(RegistrarSoulShards.SOUL_SHARD);
             if (!player.inventory.insertStack(shardStack))
-                ItemScatterer.spawn(world, player.x, player.y, player.z, shardStack);
+                ItemScatterer.spawn(world, player.getX(), player.getY(), player.getZ(), shardStack);
             return ActionResult.SUCCESS;
         });
     }

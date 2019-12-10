@@ -7,9 +7,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateFactory;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,28 +29,28 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
     public BlockSoulCage() {
         super(Settings.copy(Blocks.SPAWNER));
 
-        setDefaultState(getStateFactory().getDefaultState().with(ACTIVE, false).with(POWERED, false));
+        setDefaultState(getStateManager().getDefaultState().with(ACTIVE, false).with(POWERED, false));
     }
 
     @Override
-    public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult result) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult result) {
         if (!player.isSneaking())
-            return false;
+            return ActionResult.PASS;
 
         TileEntitySoulCage cage = (TileEntitySoulCage) world.getBlockEntity(pos);
         if (cage == null)
-            return false;
+            return ActionResult.PASS;
 
         ItemStack stack = cage.inventory.getInvStack(0);
         if (stack.isEmpty())
-            return false;
+            return ActionResult.PASS;
 
         if (!player.inventory.insertStack(stack)) {
             BlockPos playerPos = new BlockPos(player);
             ItemEntity entity = new ItemEntity(world, playerPos.getX(), playerPos.getY(), playerPos.getZ(), stack);
             world.spawnEntity(entity);
         }
-        return true;
+        return ActionResult.SUCCESS;
     }
 
 
@@ -97,11 +99,6 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
     public void onBlockAdded(BlockState state1, World world, BlockPos pos, BlockState state2, boolean someBool) {
         handleRedstoneChange(world, state1, pos);
     }
@@ -112,13 +109,13 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public void onRandomTick(BlockState state, World world, BlockPos pos, Random rand) {
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         if (state.get(POWERED) && !world.isReceivingRedstonePower(pos))
             world.setBlockState(pos, state.with(POWERED, false));
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> factory) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> factory) {
         factory.add(ACTIVE, POWERED);
     }
 
