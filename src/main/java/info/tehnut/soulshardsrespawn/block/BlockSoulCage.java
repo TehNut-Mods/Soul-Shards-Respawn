@@ -1,27 +1,27 @@
 package info.tehnut.soulshardsrespawn.block;
 
-import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.core.data.Tier;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
@@ -30,80 +30,74 @@ import java.util.Random;
 
 public class BlockSoulCage extends Block {
 
-    public static final IProperty<Boolean> POWERED = PropertyBool.create("powered");
-    public static final IProperty<Boolean> ACTIVE = PropertyBool.create("active");
+    public static final Property<Boolean> POWERED = BooleanProperty.create("powered");
+    public static final Property<Boolean> ACTIVE = BooleanProperty.create("active");
 
     public BlockSoulCage() {
-        super(Material.IRON, MapColor.PURPLE);
+        super(Properties.create(Material.IRON).harvestLevel(1).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3.0F));
 
-        setUnlocalizedName(SoulShards.MODID + ".soul_cage");
-        setCreativeTab(SoulShards.TAB_SS);
-        setDefaultState(blockState.getBaseState().withProperty(POWERED, false));
-        setHarvestLevel("pickaxe", 1);
-        setHardness(3.0F);
-        setResistance(3.0F);
+        setDefaultState(getStateContainer().getBaseState().with(POWERED, false));
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!player.isSneaking())
-            return false;
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (!player.isSteppingCarefully())
+            return ActionResultType.PASS;
 
         TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
         if (cage == null)
-            return false;
+            return ActionResultType.PASS;
 
-        ItemStack stack = cage.inventory.extractItem(0, 1, false);
+        ItemStack stack = cage.getInventory().extractItem(0, 1, false);
         if (stack.isEmpty())
-            return false;
+            return ActionResultType.PASS;
 
         ItemHandlerHelper.giveItemToPlayer(player, stack);
+        return ActionResultType.SUCCESS;
+    }
+
+
+    @Override
+    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState state2, boolean someBool) {
+        handleRedstoneChange(world, state, pos);
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighbor, BlockPos neighborPos, boolean someBool) {
+        handleRedstoneChange(world, state, pos);
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (state.get(POWERED) && !world.isBlockPowered(pos))
+            world.setBlockState(pos, state.with(POWERED, false));
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState blockState2, boolean someBool) {
+        if (this.hasTileEntity(state) && state.getBlock() != blockState2.getBlock()) {
+            TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
+            if (cage != null) {
+                ItemStack stack = cage.getInventory().getStackInSlot(0);
+                InventoryHelper.dropItems(world, pos, NonNullList.from(ItemStack.EMPTY, stack));
+            }
+        }
+
+        super.onReplaced(state, world, pos, blockState2, someBool);
+    }
+
+    @Override
+    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side) {
         return true;
     }
 
     @Override
-    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-        if (state.getValue(POWERED) && !world.isBlockPowered(pos))
-            world.setBlockState(pos, state.withProperty(POWERED, false), 2);
-        else if (!state.getValue(POWERED) && world.isBlockPowered(pos))
-            world.setBlockState(pos, state.withProperty(POWERED, true), 2);
-    }
-
-    @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        if (state.getValue(POWERED) && !world.isBlockPowered(pos))
-            world.setBlockState(pos, state.withProperty(POWERED, false));
-        else if (!state.getValue(POWERED) && world.isBlockPowered(pos))
-            world.setBlockState(pos, state.withProperty(POWERED, true));
-    }
-
-    @Override
-    public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
-        if (state.getValue(POWERED) && !world.isBlockPowered(pos))
-            world.setBlockState(pos, state.withProperty(POWERED, false));
-    }
-
-    @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
-        if (cage != null)
-            InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), cage.inventory.getStackInSlot(0));
-
-        super.breakBlock(world, pos, state);
-    }
-
-    @Override
-    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable EnumFacing side) {
+    public boolean hasComparatorInputOverride(BlockState state) {
         return true;
     }
 
     @Override
-    public boolean hasComparatorInputOverride(IBlockState state) {
-        return true;
-    }
-
-    @Override
-    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
+    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
         TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
         if (cage == null)
             return 0;
@@ -116,54 +110,41 @@ public class BlockSoulCage extends Block {
     }
 
     @Override
-    public int damageDropped(IBlockState state) {
-        return 0;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isViewBlocking(BlockState state, IBlockReader reader, BlockPos pos) {
         return false;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public boolean causesSuffocation(IBlockState state) {
+    public boolean isNormalCube(BlockState state, IBlockReader reader, BlockPos pos) {
         return false;
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public boolean causesSuffocation(BlockState state, IBlockReader reader, BlockPos pos) {
+        return false;
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        boolean powered = (meta & 1) == 1;
-        boolean active = meta >> 2 == 1;
-        return getDefaultState().withProperty(POWERED, powered).withProperty(ACTIVE, active);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(POWERED, ACTIVE);
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
-        int powered = state.getValue(POWERED) ? 1 : 0;
-        int active = (state.getValue(ACTIVE) ? 1 : 0) << 2;
-        return powered | active;
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer.Builder(this).add(POWERED, ACTIVE).build();
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state) {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileEntitySoulCage();
+    }
+
+    private void handleRedstoneChange(World world, BlockState state, BlockPos pos) {
+        boolean powered = world.isBlockPowered(pos);
+        if (state.get(POWERED) && !powered)
+            world.setBlockState(pos, state.with(POWERED, false), 2);
+        else if (!state.get(POWERED) && powered)
+            world.setBlockState(pos, state.with(POWERED, true), 2);
     }
 }

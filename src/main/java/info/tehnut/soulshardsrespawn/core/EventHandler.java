@@ -7,14 +7,13 @@ import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.core.data.MultiblockPattern;
 import info.tehnut.soulshardsrespawn.core.data.Tier;
 import info.tehnut.soulshardsrespawn.item.ItemSoulShard;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,9 +22,10 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -35,29 +35,27 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onEntityKill(LivingDeathEvent event) {
-        if (event.getEntityLiving() instanceof EntityPlayer)
+        if (event.getEntityLiving() instanceof PlayerEntity)
             return;
 
-        if (!SoulShards.CONFIG.allowFakePlayers() && event.getSource().getTrueSource() instanceof FakePlayer)
+        if (!SoulShards.CONFIG.getBalance().allowFakePlayers() && event.getSource().getTrueSource() instanceof FakePlayer)
             return;
 
-        if (!SoulShards.CONFIG.isEntityEnabled(event.getEntityLiving().getClass()))
+        if (!SoulShards.CONFIG.getEntityList().isEnabled(event.getEntityLiving().getType().getRegistryName()))
             return;
 
-        if (!SoulShards.CONFIG.allowBossSpawns() && !event.getEntityLiving().isNonBoss())
+        if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !event.getEntityLiving().isNonBoss())
             return;
 
-        if (!SoulShards.CONFIG.countCageBornForShard() && event.getEntityLiving().getEntityData().getBoolean("cageBorn"))
+        if (!SoulShards.CONFIG.getBalance().countCageBornForShard() && event.getEntityLiving().getPersistentData().getBoolean("cageBorn"))
             return;
 
-        if (event.getSource().getTrueSource() instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
-            if (player instanceof FakePlayer)
-                return;
+        if (event.getSource().getTrueSource() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
 
             BindingEvent.GetEntityName getEntityName = new BindingEvent.GetEntityName(event.getEntityLiving());
             MinecraftForge.EVENT_BUS.post(getEntityName);
-            ResourceLocation entityId = getEntityName.getEntityId() == null ?  EntityList.getKey(event.getEntityLiving()) : getEntityName.getEntityId();
+            ResourceLocation entityId = getEntityName.getEntityId() == null ?  ForgeRegistries.ENTITIES.getKey(event.getEntityLiving().getType()) : getEntityName.getEntityId();
 
             ItemStack shardItem = getFirstShard(player, entityId);
             if (shardItem.isEmpty())
@@ -72,14 +70,14 @@ public class EventHandler {
                     return;
 
                 if (shardItem.getCount() > 1) { // Peel off one blank shard from a stack of them
-                    shardItem = shardItem.splitStack(1);
+                    shardItem = shardItem.split(1);
                     newItem = true;
                 }
 
                 binding = (Binding) newBinding.getBinding();
             }
 
-            ItemStack mainHand = player.getHeldItem(EnumHand.MAIN_HAND);
+            ItemStack mainHand = player.getHeldItem(Hand.MAIN_HAND);
 
             // Base of 1 plus enchantment bonus
             int soulsGained = 1 + EnchantmentHelper.getEnchantmentLevel(RegistrarSoulShards.SOUL_STEALER, mainHand);
@@ -103,29 +101,29 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onBlockInteract(PlayerInteractEvent.RightClickBlock event) {
-        MultiblockPattern pattern = SoulShards.CONFIG.getMultiblockPattern();
-        ItemStack held = event.getEntityPlayer().getHeldItem(event.getHand());
+        MultiblockPattern pattern = ConfigSoulShards.getMultiblock();
+        ItemStack held = event.getPlayer().getHeldItem(event.getHand());
         if (!ItemStack.areItemsEqual(held, pattern.getCatalyst()))
             return;
 
-        IBlockState state = event.getWorld().getBlockState(event.getPos());
+        BlockState state = event.getWorld().getBlockState(event.getPos());
         if (!pattern.isOriginBlock(state))
             return;
 
         ActionResult<Set<BlockPos>> matched = pattern.match(event.getWorld(), event.getPos());
-        if (matched.getType() != EnumActionResult.SUCCESS)
+        if (matched.getType() != ActionResultType.SUCCESS)
             return;
 
         for (BlockPos pos : matched.getResult())
             event.getWorld().destroyBlock(pos, false);
 
         held.shrink(1);
-        ItemHandlerHelper.giveItemToPlayer(event.getEntityPlayer(), new ItemStack(RegistrarSoulShards.SOUL_SHARD));
+        ItemHandlerHelper.giveItemToPlayer(event.getPlayer(), new ItemStack(RegistrarSoulShards.SOUL_SHARD));
     }
 
     @SubscribeEvent
     public static void onAnvil(AnvilUpdateEvent event) {
-        if (!SoulShards.CONFIG.allowShardCombination())
+        if (!SoulShards.CONFIG.getBalance().allowShardCombination())
             return;
 
         if (event.getLeft().getItem() instanceof ItemSoulShard && event.getRight().getItem() instanceof ItemSoulShard) {
@@ -146,14 +144,14 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void dropExperience(LivingExperienceDropEvent event) {
-        if (!SoulShards.CONFIG.dropExperience() && event.getEntityLiving().getEntityData().getBoolean("cageBorn"))
+        if (!SoulShards.CONFIG.getBalance().shouldDropExperience() && event.getEntityLiving().getPersistentData().getBoolean("cageBorn"))
             event.setCanceled(true);
     }
 
     @Nonnull
-    public static ItemStack getFirstShard(EntityPlayer player, ResourceLocation entityId) {
+    public static ItemStack getFirstShard(PlayerEntity player, ResourceLocation entityId) {
         // Checks the offhand first
-        ItemStack shardItem = player.getHeldItem(EnumHand.OFF_HAND);
+        ItemStack shardItem = player.getHeldItem(Hand.OFF_HAND);
         // If offhand isn't a shard, loop through the hotbar
         if (shardItem.isEmpty() || !(shardItem.getItem() instanceof ItemSoulShard)) {
             for (int i = 0; i < 9; i++) {

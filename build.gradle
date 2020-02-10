@@ -1,131 +1,122 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
         mavenCentral()
-        maven { url "http://files.minecraftforge.net/maven" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-
 plugins {
-    id "net.minecraftforge.gradle.forge" version "2.0.2"
-    id "com.matthewprenger.cursegradle" version "1.1.0"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
     id "maven-publish"
 }
 
-sourceSets {
-    compat {
-        compileClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
-    }
-
-    main {
-        runtimeClasspath += sourceSets.compat.runtimeClasspath
-    }
-}
+apply plugin: 'net.minecraftforge.gradle'
 
 def build_number = System.getenv('BUILD_NUMBER') != null ? System.getenv('BUILD_NUMBER') : 'CUSTOM'
-def username = project.hasProperty('dev_username') ? "${dev_username}" : "${mod_name}"
-
-group = package_group
-archivesBaseName = mod_name
 version = "${mc_version}-${mod_version}-${build_number}"
-
-repositories {
-    maven { url "https://tehnut.info/maven/" }
-    maven { url "http://dvs1.progwml6.com/files/maven/" }
-}
-
-dependencies {
-    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
-    runtime "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
-    runtime "mezz.jei:jei_${mc_version}:${jei_version}"
-    deobfCompile "slimeknights:TConstruct:${tcon_version}"
-    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
-    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:${bm_version}"
-    deobfCompile "info.amerifrance.guideapi:Guide-API:${gapi_version}"
-}
+group = "mcp.mobius.waila"
+archivesBaseName = "SoulShardsRespawn-forge"
 
 minecraft {
-    version = "${mc_version}-${forge_version}"
-    runDir = "run"
+    mappings channel: "snapshot", version: "20200125-1.15.1"
 
-    replace "@VERSION@", project.version
-    replaceIn "SoulShards.java"
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'info'
+            property 'username', 'SoulShards'
 
-    clientRunArgs += "--username=${username}"
+            mods {
+                waila {
+                    source sourceSets.main
+                }
+            }
+        }
 
-    if (project.hasProperty('mappings_version'))
-        mappings = project.mappings_version
+        server {
+            workingDirectory project.file('run/server')
+            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'info'
+
+            mods {
+                waila {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
 processResources {
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
 
     from(sourceSets.main.resources.srcDirs) {
-        include '**/*.info'
-        include '**/*.properties'
+        include '**/*.toml'
 
-        expand 'version': project.version, 'mcversion': project.minecraft.version
+        expand 'version': project.version
     }
-
     from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.info'
-        exclude '**/*.properties'
+        exclude '**/*.toml'
     }
 }
 
-allprojects {
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-    }
+repositories {
+    maven { url "https://tehnut.info/maven" }
 }
 
+dependencies {
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+}
+
+apply from: "gradle/process_mod_info.gradle"
+
+// Combine main and API source sets
 jar {
     from sourceSets.main.output
-    from sourceSets.api.output
-    from sourceSets.compat.output
-    manifest.mainAttributes(
-            "Built-By": System.getProperty('user.name'),
-            "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
-            "Implementation-Title": project.name,
-            "Implementation-Version": project.version
-    )
+    manifest {
+        attributes(["Specification-Title": "SoulShardsRespawn",
+                    "Specification-Vendor": "TehNut",
+                    "Specification-Version": "1", // We are version 1 of ourselves
+                    "Implementation-Title": project.name,
+                    "Implementation-Version": "${version}",
+                    "Implementation-Vendor" :"TehNut",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
+    }
 }
 
+// API jar
 task apiJar(type: Jar) {
     classifier = 'api'
-    from sourceSets.api.output
-
-    // TODO: when FG bug is fixed, remove allJava from the api jar.
-    // https://github.com/MinecraftForge/ForgeGradle/issues/369
-    // Gradle should be able to pull them from the -sources jar.
-    from sourceSets.api.allJava
+    include 'info/tehnut/soulshardsrespawn/**/*'
+    from sourceSets.main.allSource
+    from sourceSets.main.output
 }
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allJava
-    from sourceSets.api.allJava
-    from sourceSets.compat.allJava
 }
+
+tasks.build.dependsOn apiJar, sourcesJar
 
 tasks.withType(JavaCompile) { task ->
     task.options.encoding = 'UTF-8'
 }
-
-tasks.build.dependsOn apiJar, sourcesJar
 
 publishing {
     tasks.publish.dependsOn 'build'
     publications {
         mavenJava(MavenPublication) {
             artifact jar
-            artifact apiJar
             artifact sourcesJar
+            artifact apiJar
         }
     }
     repositories {
@@ -139,8 +130,6 @@ publishing {
 
 String getChangelogText() {
     def changelogFile = new File('changelog.txt')
-    if (!changelogFile.exists())
-        return ""
     String str = ''
     String separator = '---'
     int lineCount = 0
@@ -164,11 +153,6 @@ String getChangelogText() {
     return str
 }
 
-def curseRelations = {
-    optionalLibrary 'hwyla'
-    optionalLibrary 'jei'
-}
-
 curseforge {
     if (project.hasProperty('curse_key_TehNut'))
         apiKey = project.curse_key_TehNut
@@ -178,7 +162,9 @@ curseforge {
         changelog = getChangelogText()
         releaseType = 'release'
 
-        relations curseRelations
+        addGameVersion "1.15"
+        addGameVersion "1.15.1"
+        addGameVersion "1.15.2"
 
         addArtifact sourcesJar
         addArtifact apiJar

@@ -5,18 +5,18 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.awt.Point;
 import java.lang.reflect.Type;
@@ -81,37 +81,37 @@ public class MultiblockPattern {
             String line = shape[y];
             for (int x = 0; x < line.length(); x++) {
                 BlockPos offset = originBlock.add(x - origin.x, 0, y - origin.y);
-                IBlockState state = world.getBlockState(offset);
+                BlockState state = world.getBlockState(offset);
                 if (!definition.get(line.charAt(x)).test(state))
-                    return ActionResult.newResult(EnumActionResult.FAIL, Collections.emptySet());
+                    return new ActionResult<>(ActionResultType.FAIL, Collections.emptySet());
 
                 matched.add(offset);
             }
         }
 
-        return ActionResult.newResult(EnumActionResult.SUCCESS, matched);
+        return new ActionResult<>(ActionResultType.SUCCESS, matched);
     }
 
-    public boolean isOriginBlock(IBlockState state) {
+    public boolean isOriginBlock(BlockState state) {
         Slot slot = definition.get(shape[origin.y].charAt(origin.x));
         return slot.test(state);
     }
 
-    public static class Slot implements Predicate<IBlockState> {
+    public static class Slot implements Predicate<BlockState> {
 
         @JsonAdapter(SerializerBlockState.class)
-        private final Set<IBlockState> states;
+        private final Set<BlockState> states;
 
-        public Slot(IBlockState... states) {
+        public Slot(BlockState... states) {
             this.states = Sets.newHashSet(states);
         }
 
         public Slot(Block block) {
-            this(block.getBlockState().getValidStates().toArray(new IBlockState[0]));
+            this(block.getStateContainer().getValidStates().toArray(new BlockState[0]));
         }
 
         @Override
-        public boolean test(IBlockState state) {
+        public boolean test(BlockState state) {
             return states.contains(state);
         }
     }
@@ -122,8 +122,7 @@ public class MultiblockPattern {
             JsonObject json = element.getAsJsonObject();
 
             ResourceLocation itemId = new ResourceLocation(json.getAsJsonObject("catalyst").getAsJsonPrimitive("item").getAsString());
-            int meta = json.getAsJsonObject("catalyst").getAsJsonPrimitive("data").getAsInt();
-            ItemStack catalyst = new ItemStack(ForgeRegistries.ITEMS.getValue(itemId), 1, meta);
+            ItemStack catalyst = new ItemStack(ForgeRegistries.ITEMS.getValue(itemId), 1);
 
             String[] shape = context.deserialize(json.getAsJsonArray("shape"), String[].class);
             Point origin = context.deserialize(json.getAsJsonObject("origin"), Point.class);
@@ -133,10 +132,10 @@ public class MultiblockPattern {
         }
     }
 
-    public static class SerializerBlockState implements JsonDeserializer<Set<IBlockState>> {
+    public static class SerializerBlockState implements JsonDeserializer<Set<BlockState>> {
         @Override
-        public Set<IBlockState> deserialize(JsonElement element, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            Set<IBlockState> states = Sets.newHashSet();
+        public Set<BlockState> deserialize(JsonElement element, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            Set<BlockState> states = Sets.newHashSet();
             for (JsonElement entry : element.getAsJsonArray()) {
                 String state = entry.getAsJsonPrimitive().getAsString();
                 if (state.contains("[")) {
@@ -147,8 +146,8 @@ public class MultiblockPattern {
                     if (block == Blocks.AIR)
                         return Collections.singleton(block.getDefaultState());
 
-                    BlockStateContainer blockState = block.getBlockState();
-                    IBlockState returnState = blockState.getBaseState();
+                    StateContainer<Block, BlockState> blockState = block.getStateContainer();
+                    BlockState returnState = blockState.getBaseState();
 
                     // Force our values into the state
                     String[] stateValues = split[1].split(","); // Splits up each value
@@ -156,10 +155,10 @@ public class MultiblockPattern {
                         String[] valueSplit = value.split("=");
                         IProperty property = blockState.getProperty(valueSplit[0]);
                         if (property != null)
-                            returnState = returnState.withProperty(property, (Comparable) property.parseValue(valueSplit[1]).get());
+                            returnState = returnState.with(property, (Comparable) property.parseValue(valueSplit[1]).get());
                     }
                 } else {
-                    states.addAll(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(state)).getBlockState().getValidStates());
+                    states.addAll(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(state)).getStateContainer().getValidStates());
                 }
             }
 

@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.api.IShardTier;
 import info.tehnut.soulshardsrespawn.core.util.JsonUtil;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.util.List;
@@ -91,7 +91,7 @@ public class Tier implements IShardTier {
     }
 
     public static void readTiers() {
-        Tier[] tiers = JsonUtil.fromJson(TypeToken.get(Tier[].class), new File(Loader.instance().getConfigDir(), SoulShards.MODID + "/tiers.json"), generateDefaults());
+        Tier[] tiers = JsonUtil.fromJson(TypeToken.get(Tier[].class), new File(FMLPaths.CONFIGDIR.get().toFile(), SoulShards.MODID + "/tiers.json"), generateDefaults());
         for (Tier tier : tiers) {
             TIERS.put(tier.killRequirement, tier);
             INDEXED.add(tier);

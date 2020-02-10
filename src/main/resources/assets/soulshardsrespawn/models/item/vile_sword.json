@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "soulshardsrespawn:items/vile_sword"
+    "layer0": "soulshardsrespawn:item/vile_sword"
   }
 }

@@ -1,0 +1,19 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "IBI",
+    "B B",
+    "IBI"
+  ],
+  "key": {
+    "I": {
+      "item": "soulshardsrespawn:corrupted_ingot"
+    },
+    "B": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "result": {
+    "item": "soulshardsrespawn:soul_cage"
+  }
+}

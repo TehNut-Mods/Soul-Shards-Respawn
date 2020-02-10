@@ -1,0 +1,46 @@
+{
+  "catalyst": {
+    "item": "minecraft:diamond"
+  },
+  "shape": [
+    "OQO",
+    "QGQ",
+    "OQO"
+  ],
+  "origin": {
+    "x": 1,
+    "y": 1
+  },
+  "definition": {
+    "O": {
+      "blocks": [
+        "minecraft:obsidian"
+      ]
+    },
+    "Q": {
+      "blocks": [
+        "minecraft:smooth_quartz",
+        "minecraft:quartz_pillar",
+        "minecraft:quartz_block",
+        "minecraft:chiseled_quartz_block",
+        {
+          "block": "minecraft:smooth_quartz_slab",
+          "states": {
+            "type": "double"
+          }
+        },
+        {
+          "block": "minecraft:quartz_slab",
+          "states": {
+            "type": "double"
+          }
+        }
+      ]
+    },
+    "G": {
+      "blocks": [
+        "minecraft:glowstone"
+      ]
+    }
+  }
+}

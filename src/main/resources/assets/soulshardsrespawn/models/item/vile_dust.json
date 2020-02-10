@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "soulshardsrespawn:items/vile_dust"
+    "layer0": "soulshardsrespawn:item/vile_dust"
   }
 }

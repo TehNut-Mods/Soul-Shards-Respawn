@@ -3,14 +3,14 @@ package info.tehnut.soulshardsrespawn.core.data;
 import info.tehnut.soulshardsrespawn.api.IBinding;
 import info.tehnut.soulshardsrespawn.api.IShardTier;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Binding implements IBinding, INBTSerializable<NBTTagCompound> {
+public class Binding implements IBinding, INBTSerializable<CompoundNBT> {
 
     @Nullable
     private ResourceLocation boundEntity;
@@ -28,7 +28,7 @@ public class Binding implements IBinding, INBTSerializable<NBTTagCompound> {
         this(boundEntity, null, kills);
     }
 
-    public Binding(NBTTagCompound bindingTag) {
+    public Binding(CompoundNBT bindingTag) {
         deserializeNBT(bindingTag);
     }
 
@@ -76,35 +76,35 @@ public class Binding implements IBinding, INBTSerializable<NBTTagCompound> {
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound tag = new NBTTagCompound();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT tag = new CompoundNBT();
 
         if (boundEntity != null)
-            tag.setString("bound", boundEntity.toString());
+            tag.putString("bound", boundEntity.toString());
         if (owner != null)
-            tag.setString("owner", owner.toString());
-        tag.setInteger("kills", kills);
+            tag.putString("owner", owner.toString());
+        tag.putInt("kills", kills);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        if (nbt.hasKey("bound"))
+    public void deserializeNBT(CompoundNBT nbt) {
+        if (nbt.contains("bound"))
             this.boundEntity = new ResourceLocation(nbt.getString("bound"));
-        if (nbt.hasKey("owner"))
+        if (nbt.contains("owner"))
             this.owner = UUID.fromString(nbt.getString("owner"));
-        this.kills = nbt.getInteger("kills");
+        this.kills = nbt.getInt("kills");
     }
 
     @Nullable
     public static Binding fromNBT(ItemStack stack) {
-        if (!stack.hasTagCompound())
+        if (!stack.hasTag())
             return null;
 
-        NBTTagCompound tag = stack.getTagCompound();
-        if (!tag.hasKey("binding"))
+        CompoundNBT tag = stack.getTag();
+        if (!tag.contains("binding"))
             return null;
 
-        return new Binding(tag.getCompoundTag("binding"));
+        return new Binding(tag.getCompound("binding"));
     }
 }

@@ -7,29 +7,26 @@ import info.tehnut.soulshardsrespawn.block.TileEntitySoulCage;
 import info.tehnut.soulshardsrespawn.core.RegistrarSoulShards;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.core.data.Tier;
-import net.minecraft.block.BlockMobSpawner;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SpawnerBlock;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.MobSpawnerBaseLogic;
-import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.spawner.AbstractSpawner;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
@@ -40,13 +37,11 @@ public class ItemSoulShard extends Item implements ISoulShard {
     private static final Method GET_ENTITY_ID_METHOD;
 
     static {
-        GET_ENTITY_ID_METHOD = ReflectionHelper.findMethod(MobSpawnerBaseLogic.class, "getEntityId", "func_190895_g");
+        GET_ENTITY_ID_METHOD = ObfuscationReflectionHelper.findMethod(AbstractSpawner.class, "func_190895_g");
     }
 
     public ItemSoulShard() {
-        setUnlocalizedName(SoulShards.MODID + ".soul_shard");
-        setCreativeTab(SoulShards.TAB_SS);
-        setHasSubtypes(true);
+        super(new Properties().group(SoulShards.TAB_SS));
 
         addPropertyOverride(new ResourceLocation(SoulShards.MODID, "bound"), (stack, worldIn, entityIn) -> getBinding(stack) != null ? 1.0F : 0.0F);
         addPropertyOverride(new ResourceLocation(SoulShards.MODID, "tier"), (stack, world, entity) -> {
@@ -54,116 +49,104 @@ public class ItemSoulShard extends Item implements ISoulShard {
             if (binding == null)
                 return 0F;
 
-            return Float.valueOf("0." + Tier.INDEXED.indexOf(binding.getTier()));
+            return Float.parseFloat("0." + Tier.INDEXED.indexOf(binding.getTier()));
         });
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        IBlockState state = world.getBlockState(pos);
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResultType onItemUse(ItemUseContext context) {
+        if (context.getPlayer() == null)
+            return ActionResultType.PASS;
+
+        BlockState state = context.getWorld().getBlockState(context.getPos());
+        ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
         Binding binding = getBinding(stack);
         if (binding == null)
-            return EnumActionResult.PASS;
+            return ActionResultType.PASS;
 
-        if (state.getBlock() instanceof BlockMobSpawner) {
-            if (!SoulShards.CONFIG.allowSpawnerAbsorption()) {
-                player.sendStatusMessage(new TextComponentTranslation("chat.soulshardsrespawn.absorb_disabled"), true);
-                return EnumActionResult.PASS;
+        if (state.getBlock() instanceof SpawnerBlock) {
+            if (!SoulShards.CONFIG.getBalance().allowSpawnerAbsorption()) {
+                context.getPlayer().sendStatusMessage(new TranslationTextComponent("chat.soulshardsrespawn.absorb_disabled"), true);
+                return ActionResultType.PASS;
             }
 
             if (binding.getKills() >= Tier.maxKills)
-                return EnumActionResult.PASS;
+                return ActionResultType.PASS;
 
-            TileEntityMobSpawner mobSpawner = (TileEntityMobSpawner) world.getTileEntity(pos);
+            MobSpawnerTileEntity mobSpawner = (MobSpawnerTileEntity) context.getWorld().getTileEntity(context.getPos());
             if (mobSpawner == null)
-                return EnumActionResult.PASS;
+                return ActionResultType.PASS;
 
             try {
                 ResourceLocation entityId = (ResourceLocation) GET_ENTITY_ID_METHOD.invoke(mobSpawner.getSpawnerBaseLogic());
-                if (!SoulShards.CONFIG.isEntityEnabled(entityId))
-                    return EnumActionResult.PASS;
+                if (!SoulShards.CONFIG.getEntityList().isEnabled(entityId))
+                    return ActionResultType.PASS;
 
                 if (entityId == null || binding.getBoundEntity() == null || !binding.getBoundEntity().equals(entityId))
-                    return EnumActionResult.FAIL;
+                    return ActionResultType.FAIL;
 
-                updateBinding(stack, binding.addKills(SoulShards.CONFIG.getAbsorptionBonus()));
-                world.destroyBlock(pos, false);
-                return EnumActionResult.SUCCESS;
+                updateBinding(stack, binding.addKills(SoulShards.CONFIG.getBalance().getAbsorptionBonus()));
+                context.getWorld().destroyBlock(context.getPos(), false);
+                return ActionResultType.SUCCESS;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else if (state.getBlock() == RegistrarSoulShards.SOUL_CAGE) {
             if (binding.getBoundEntity() == null)
-                return EnumActionResult.FAIL;
+                return ActionResultType.FAIL;
 
-            TileEntitySoulCage cage = (TileEntitySoulCage) world.getTileEntity(pos);
+            TileEntitySoulCage cage = (TileEntitySoulCage) context.getWorld().getTileEntity(context.getPos());
             if (cage == null)
-                return EnumActionResult.PASS;
+                return ActionResultType.PASS;
 
-            IItemHandler itemHandler = cage.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            IItemHandler itemHandler = cage.getInventory();
             if (itemHandler != null && itemHandler.getStackInSlot(0).isEmpty()) {
                 ItemHandlerHelper.insertItem(itemHandler, stack.copy(), false);
                 cage.markDirty();
-                player.setHeldItem(hand, ItemStack.EMPTY);
-                return EnumActionResult.SUCCESS;
+                context.getPlayer().setHeldItem(context.getHand(), ItemStack.EMPTY);
+                return ActionResultType.SUCCESS;
             }
         }
 
-        return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+        return super.onItemUse(context);
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (!isInCreativeTab(tab))
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if (!isInGroup(group))
             return;
 
         items.add(new ItemStack(this));
-
         for (IShardTier tier : Tier.INDEXED) {
             ItemStack stack = new ItemStack(this);
             Binding binding = new Binding(null, tier.getKillRequirement());
             updateBinding(stack, binding);
             items.add(stack);
         }
-
-        if (SoulShards.CONFIG.explodeCreativeTab()) {
-            Binding binding = new Binding(null, Tier.maxKills);
-            SoulShards.CONFIG.getEntityMap().entrySet()
-                    .stream()
-                    .filter(e -> e.getValue() || SoulShards.CONFIG.ignoreBlacklistForTab())
-                    .forEach(e -> {
-                        binding.setBoundEntity(e.getKey());
-                        ItemStack stack = new ItemStack(this);
-                        updateBinding(stack, binding);
-                        items.add(stack);
-                    });
-        }
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         Binding binding = getBinding(stack);
         if (binding == null)
             return;
 
         if (binding.getBoundEntity() != null) {
-            EntityEntry entityEntry = ForgeRegistries.ENTITIES.getValue(binding.getBoundEntity());
+            EntityType<?> entityEntry = ForgeRegistries.ENTITIES.getValue(binding.getBoundEntity());
             if (entityEntry != null)
-                tooltip.add(I18n.format("tooltip.soulshardsrespawn.bound", entityEntry.getName()));
+                tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.bound", entityEntry.getName()));
         }
 
-        tooltip.add(I18n.format("tooltip.soulshardsrespawn.tier", binding.getTier().getIndex()));
-        tooltip.add(I18n.format("tooltip.soulshardsrespawn.kills", binding.getKills()));
+        tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.tier", binding.getTier().getIndex()));
+        tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.kills", binding.getKills()));
         if (flag.isAdvanced() && binding.getOwner() != null)
-            tooltip.add(I18n.format("tooltip.soulshardsrespawn.owner", binding.getOwner().toString()));
+            tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.owner", binding.getOwner().toString()));
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getTranslationKey(ItemStack stack) {
         Binding binding = getBinding(stack);
-        return super.getUnlocalizedName(stack) + (binding == null || binding.getBoundEntity() == null ? "_unbound" : "");
+        return super.getTranslationKey(stack) + (binding == null || binding.getBoundEntity() == null ? "_unbound" : "");
     }
 
     @Override
@@ -175,7 +158,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
         Binding binding = getBinding(stack);
-        return SoulShards.CONFIG.displayDurabilityBar() && binding != null && binding.getKills() < Tier.maxKills;
+        return SoulShards.CONFIG.getClient().displayDurabilityBar() && binding != null && binding.getKills() < Tier.maxKills;
     }
 
     @Override
@@ -204,9 +187,9 @@ public class ItemSoulShard extends Item implements ISoulShard {
     }
 
     public void updateBinding(ItemStack stack, Binding binding) {
-        if (!stack.hasTagCompound())
-            stack.setTagCompound(new NBTTagCompound());
+        if (!stack.hasTag())
+            stack.setTag(new CompoundNBT());
 
-        stack.getTagCompound().setTag("binding", binding.serializeNBT());
+        stack.getTag().put("binding", binding.serializeNBT());
     }
 }

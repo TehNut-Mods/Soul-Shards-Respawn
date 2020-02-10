@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "soulshardsrespawn:items/soul_shard"
+    "layer0": "soulshardsrespawn:item/soul_shard"
   },
   "overrides": [
     {

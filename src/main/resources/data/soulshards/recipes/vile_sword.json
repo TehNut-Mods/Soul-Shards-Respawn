@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "soulshardsrespawn:vile_sword"
+  },
+  "type": "crafting_shaped",
+  "pattern": [
+    "I",
+    "I",
+    "S"
+  ],
+  "key": {
+    "I": {
+      "item": "soulshardsrespawn:corrupted_ingot"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  }
+}

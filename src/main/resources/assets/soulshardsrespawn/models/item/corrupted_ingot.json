@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "soulshardsrespawn:items/corrupted_ingot"
+    "layer0": "soulshardsrespawn:item/corrupted_ingot"
   }
 }
