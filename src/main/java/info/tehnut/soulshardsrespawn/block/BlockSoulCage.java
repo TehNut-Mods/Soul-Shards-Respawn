@@ -33,7 +33,7 @@ public class BlockSoulCage extends Block {
     public static final Property<Boolean> ACTIVE = BooleanProperty.create("active");
 
     public BlockSoulCage() {
-        super(Properties.create(Material.IRON).harvestLevel(1).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3.0F));
+        super(Properties.create(Material.IRON).harvestLevel(1).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3.0F).notSolid());
 
         setDefaultState(getStateContainer().getBaseState().with(POWERED, false).with(ACTIVE, false));
     }
@@ -106,16 +106,6 @@ public class BlockSoulCage extends Block {
             return 0;
 
         return (int) (((double) binding.getTier().getIndex() / ((double) Tier.INDEXED.size() - 1)) * 15D);
-    }
-
-    @Override
-    public boolean isViewBlocking(BlockState state, IBlockReader reader, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean isNormalCube(BlockState state, IBlockReader reader, BlockPos pos) {
-        return false;
     }
 
     @Override
