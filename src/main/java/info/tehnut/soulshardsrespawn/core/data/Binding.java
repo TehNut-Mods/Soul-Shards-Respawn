@@ -82,7 +82,7 @@ public class Binding implements IBinding, INBTSerializable<CompoundNBT> {
         if (boundEntity != null)
             tag.putString("bound", boundEntity.toString());
         if (owner != null)
-            tag.putString("owner", owner.toString());
+            tag.putUniqueId("owner", owner);
         tag.putInt("kills", kills);
         return tag;
     }
@@ -91,8 +91,8 @@ public class Binding implements IBinding, INBTSerializable<CompoundNBT> {
     public void deserializeNBT(CompoundNBT nbt) {
         if (nbt.contains("bound"))
             this.boundEntity = new ResourceLocation(nbt.getString("bound"));
-        if (nbt.contains("owner"))
-            this.owner = UUID.fromString(nbt.getString("owner"));
+        if (nbt.hasUniqueId("owner"))
+            this.owner = nbt.getUniqueId("owner");
         this.kills = nbt.getInt("kills");
     }
 
