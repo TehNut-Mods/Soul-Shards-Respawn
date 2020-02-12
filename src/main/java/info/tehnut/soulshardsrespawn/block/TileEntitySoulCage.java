@@ -63,8 +63,6 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
             world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
         }
         activeTime++;
-        BlockState state = getWorld().getBlockState(getPos());
-        getWorld().notifyBlockUpdate(getPos(), state, state, 3);
 
         if (activeTime % result.getResult().getTier().getCooldown() == 0)
             spawnEntities();
