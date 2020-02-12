@@ -1,5 +1,6 @@
 package info.tehnut.soulshardsrespawn.item;
 
+import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.api.ISoulWeapon;
 import info.tehnut.soulshardsrespawn.core.RegistrarSoulShards;
 import net.minecraft.entity.LivingEntity;
@@ -13,7 +14,7 @@ public class ItemVileSword extends SwordItem implements ISoulWeapon {
     public static final IItemTier MATERIAL_VILE = new MaterialVile();
 
     public ItemVileSword() {
-        super(MATERIAL_VILE, 3, -2.4F, new Properties().group(ItemGroup.COMBAT));
+        super(MATERIAL_VILE, 3, -2.4F, new Properties().group(SoulShards.TAB_SS));
     }
 
     @Override
