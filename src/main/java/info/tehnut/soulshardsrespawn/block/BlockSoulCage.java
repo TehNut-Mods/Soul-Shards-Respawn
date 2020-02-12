@@ -25,7 +25,6 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.Random;
 
 public class BlockSoulCage extends Block {
@@ -36,7 +35,7 @@ public class BlockSoulCage extends Block {
     public BlockSoulCage() {
         super(Properties.create(Material.IRON).harvestLevel(1).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3.0F));
 
-        setDefaultState(getStateContainer().getBaseState().with(POWERED, false));
+        setDefaultState(getStateContainer().getBaseState().with(POWERED, false).with(ACTIVE, false));
     }
 
     @Override

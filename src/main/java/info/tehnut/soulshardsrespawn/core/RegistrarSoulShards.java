@@ -24,6 +24,7 @@ public class RegistrarSoulShards {
 
     public static final Block SOUL_CAGE = Blocks.AIR;
 
+    @ObjectHolder("soul_cage")
     public static final TileEntityType<?> SOUL_CAGE_TE = TileEntityType.BED;
 
     public static final Item SOUL_SHARD = Items.AIR;

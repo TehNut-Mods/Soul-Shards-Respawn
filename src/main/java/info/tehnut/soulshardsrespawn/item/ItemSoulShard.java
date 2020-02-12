@@ -103,6 +103,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
             if (itemHandler != null && itemHandler.getStackInSlot(0).isEmpty()) {
                 ItemHandlerHelper.insertItem(itemHandler, stack.copy(), false);
                 cage.markDirty();
+                cage.setState(true);
                 context.getPlayer().setHeldItem(context.getHand(), ItemStack.EMPTY);
                 return ActionResultType.SUCCESS;
             }

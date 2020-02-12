@@ -2,6 +2,7 @@ package info.tehnut.soulshardsrespawn.block;
 
 import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.api.CageSpawnEvent;
+import info.tehnut.soulshardsrespawn.api.IShardTier;
 import info.tehnut.soulshardsrespawn.core.RegistrarSoulShards;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
 import info.tehnut.soulshardsrespawn.item.ItemSoulShard;
@@ -20,7 +21,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,6 +31,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class TileEntitySoulCage extends TileEntity implements ITickableTileEntity {
 
@@ -79,13 +80,16 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
         if (entityEntry == null)
             return;
 
-        for (int i = 0; i < binding.getTier().getSpawnAmount(); i++) {
+        IShardTier tier = binding.getTier();
+        for (int i = 0; i < tier.getSpawnAmount(); i++) {
             for (int attempts = 0; attempts < 5; attempts++) {
-
-                double x = getPos().getX() + (getWorld().rand.nextDouble() - getWorld().rand.nextDouble()) * 4.0D;
-                double y = getPos().getY() + getWorld().rand.nextInt(3) - 1;
-                double z = getPos().getZ() + (getWorld().rand.nextDouble() - getWorld().rand.nextDouble()) * 4.0D;
+                double x = getPos().getX() + (getWorld().rand.nextDouble() - getWorld().rand.nextDouble()) * 4.0D + 0.5D;
+                double y = getPos().getY() + getWorld().rand.nextInt(3);
+                double z = getPos().getZ() + (getWorld().rand.nextDouble() - getWorld().rand.nextDouble()) * 4.0D + 0.5D;
                 BlockPos spawnAt = new BlockPos(x, y, z);
+
+                if (spawnAt.equals(getPos()))
+                    spawnAt = new BlockPos(x, y + 1, z);
 
                 LivingEntity entityLiving = (LivingEntity) entityEntry.create(getWorld());
                 if (entityLiving == null)
@@ -94,11 +98,11 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
                 if (binding.getTier().checkLight() && !canSpawnInLight(entityLiving, spawnAt))
                     continue;
 
-                entityLiving.setLocationAndAngles(spawnAt.getX(), spawnAt.getY(), spawnAt.getZ(), MathHelper.wrapDegrees(getWorld().rand.nextFloat() * 360F), 0F);
+                entityLiving.moveToBlockPosAndAngles(spawnAt, getWorld().rand.nextFloat() * 360F, 0F);
                 entityLiving.getPersistentData().putBoolean("cageBorn", true);
                 entityLiving.forceSpawn = true;
 
-                if (entityLiving.isAlive() && !hasReachedSpawnCap(entityLiving) && !isColliding(entityLiving)) {
+                if (entityLiving.isAlive() && !hasReachedSpawnCap(entityLiving) && getWorld().func_226668_i_(entityLiving)) { // func_226668_i_ -> checkNoEntityCollision
                     if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.isNonBoss())
                         continue;
 
@@ -124,11 +128,13 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
         if (shardStack.isEmpty() || !(shardStack.getItem() instanceof ItemSoulShard))
             return new ActionResult<>(ActionResultType.FAIL, null);
 
-        Binding binding = ((ItemSoulShard) shardStack.getItem()).getBinding(shardStack);
+        Binding binding = getBinding();
         if (binding == null || binding.getBoundEntity() == null)
             return new ActionResult<>(ActionResultType.FAIL, binding);
 
-        if (binding.getTier().getSpawnAmount() == 0)
+        IShardTier tier = binding.getTier();
+
+        if (tier.getSpawnAmount() == 0)
             return new ActionResult<>(ActionResultType.FAIL, binding);
 
         if (SoulShards.CONFIG.getBalance().requireOwnerOnline() && !ownerOnline())
@@ -138,12 +144,12 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
             return new ActionResult<>(ActionResultType.FAIL, binding);
 
         if (!SoulShards.CONFIG.getBalance().requireRedstoneSignal()) {
-            if (state.get(BlockSoulCage.POWERED) && binding.getTier().checkRedstone())
+            if (state.get(BlockSoulCage.POWERED) && tier.checkRedstone())
                 return new ActionResult<>(ActionResultType.FAIL, binding);
         } else if (!state.get(BlockSoulCage.POWERED))
             return new ActionResult<>(ActionResultType.FAIL, binding);
 
-        if (binding.getTier().checkPlayer() && getWorld().getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), 16, false) == null)
+        if (tier.checkPlayer() && getWorld().getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), 16, false) == null)
             return new ActionResult<>(ActionResultType.FAIL, binding);
 
         return new ActionResult<>(ActionResultType.SUCCESS, binding);
@@ -151,10 +157,6 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
 
     private boolean canSpawnInLight(LivingEntity entityLiving, BlockPos pos) {
         return !(entityLiving instanceof IMob) || world.getLightFor(LightType.BLOCK, pos) <= 8;
-    }
-
-    private boolean isColliding(LivingEntity entity) {
-        return world.func_226664_a_(entity.getBoundingBox()) && world.getEntitiesWithinAABB(LivingEntity.class, entity.getBoundingBox(), e -> true).isEmpty();
     }
 
     private boolean hasReachedSpawnCap(LivingEntity living) {
