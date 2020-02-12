@@ -1,6 +1,5 @@
 package info.tehnut.soulshardsrespawn.compat.hwyla;
 
-import info.tehnut.soulshardsrespawn.SoulShards;
 import info.tehnut.soulshardsrespawn.block.TileEntitySoulCage;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
 import mcp.mobius.waila.api.*;
@@ -19,10 +18,13 @@ public class HwylaCompatibilityPlugin implements IWailaPlugin {
 
     @Override
     public void register(IRegistrar registrar) {
+        registrar.registerEntityDataProvider((data, player, world, entity) ->
+                data.putBoolean("cageBorn", entity.getPersistentData().contains("cageBorn")), LivingEntity.class);
+
         registrar.registerComponentProvider(new IEntityComponentProvider() {
             @Override
             public void appendBody(List<ITextComponent> tooltip, IEntityAccessor accessor, IPluginConfig config) {
-                if (accessor.getEntity().getPersistentData().contains("cageBorn"))
+                if (accessor.getServerData().getBoolean("cageBorn"))
                     tooltip.add(new TranslationTextComponent("tooltip.soulshards.cage_born"));
             }
         }, TooltipPosition.BODY, LivingEntity.class);
