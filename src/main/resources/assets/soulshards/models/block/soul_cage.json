@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "soulshardsrespawn:block/soul_cage"
+    "all": "soulshards:block/soul_cage"
   }
 }

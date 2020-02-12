@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "soulshardsrespawn:item/soul_shard_tier_0"
-  }
-}

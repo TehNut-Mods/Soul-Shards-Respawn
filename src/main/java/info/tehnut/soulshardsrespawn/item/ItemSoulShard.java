@@ -23,7 +23,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -66,7 +65,7 @@ public class ItemSoulShard extends Item implements ISoulShard {
 
         if (state.getBlock() instanceof SpawnerBlock) {
             if (!SoulShards.CONFIG.getBalance().allowSpawnerAbsorption()) {
-                context.getPlayer().sendStatusMessage(new TranslationTextComponent("chat.soulshardsrespawn.absorb_disabled"), true);
+                context.getPlayer().sendStatusMessage(new TranslationTextComponent("chat.soulshards.absorb_disabled"), true);
                 return ActionResultType.PASS;
             }
 
@@ -135,13 +134,13 @@ public class ItemSoulShard extends Item implements ISoulShard {
         if (binding.getBoundEntity() != null) {
             EntityType<?> entityEntry = ForgeRegistries.ENTITIES.getValue(binding.getBoundEntity());
             if (entityEntry != null)
-                tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.bound", entityEntry.getName()));
+                tooltip.add(new TranslationTextComponent("tooltip.soulshards.bound", entityEntry.getName()));
         }
 
-        tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.tier", binding.getTier().getIndex()));
-        tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.kills", binding.getKills()));
+        tooltip.add(new TranslationTextComponent("tooltip.soulshards.tier", binding.getTier().getIndex()));
+        tooltip.add(new TranslationTextComponent("tooltip.soulshards.kills", binding.getKills()));
         if (flag.isAdvanced() && binding.getOwner() != null)
-            tooltip.add(new TranslationTextComponent("tooltip.soulshardsrespawn.owner", binding.getOwner().toString()));
+            tooltip.add(new TranslationTextComponent("tooltip.soulshards.owner", binding.getOwner().toString()));
     }
 
     @Override

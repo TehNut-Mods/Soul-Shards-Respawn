@@ -7,16 +7,16 @@
   ],
   "key": {
     "C": {
-      "item": "soulshardsrespawn:corrupted_essence"
+      "item": "soulshards:corrupted_essence"
     },
     "V": {
-      "item": "soulshardsrespawn:vile_dust"
+      "item": "soulshards:vile_dust"
     },
     "I": {
       "item": "minecraft:iron_ingot"
     }
   },
   "result": {
-    "item": "soulshardsrespawn:corrupted_ingot"
+    "item": "soulshards:corrupted_ingot"
   }
 }

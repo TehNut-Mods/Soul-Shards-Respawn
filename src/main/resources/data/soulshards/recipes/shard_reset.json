@@ -2,10 +2,10 @@
   "type": "crafting_shapeless",
   "ingredients": [
     {
-      "item": "soulshardsrespawn:soul_shard"
+      "item": "soulshards:soul_shard"
     }
   ],
   "result": {
-    "item": "soulshardsrespawn:soul_shard"
+    "item": "soulshards:soul_shard"
   }
 }

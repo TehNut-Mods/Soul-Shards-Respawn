@@ -7,13 +7,13 @@
   ],
   "key": {
     "I": {
-      "item": "soulshardsrespawn:corrupted_ingot"
+      "item": "soulshards:corrupted_ingot"
     },
     "B": {
       "item": "minecraft:iron_bars"
     }
   },
   "result": {
-    "item": "soulshardsrespawn:soul_cage"
+    "item": "soulshards:soul_cage"
   }
 }

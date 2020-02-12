@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "active=true": { "model": "soulshardsrespawn:block/soul_cage_active" },
-    "active=false": { "model": "soulshardsrespawn:block/soul_cage" }
-  }
-}

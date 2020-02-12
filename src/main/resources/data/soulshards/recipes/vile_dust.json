@@ -3,7 +3,7 @@
   "ingredient": {
     "item": "minecraft:soul_sand"
   },
-  "result": "soulshardsrespawn:vile_dust",
+  "result": "soulshards:vile_dust",
   "experience": 0.75,
   "cookingtime": 400
 }

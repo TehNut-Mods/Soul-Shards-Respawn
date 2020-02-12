@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +22,7 @@ import java.io.File;
 @Mod(SoulShards.MODID)
 public class SoulShards {
 
-    public static final String MODID = "soulshardsrespawn";
+    public static final String MODID = "soulshards";
     public static final String NAME = "Soul Shards Respawn";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
     public static final ConfigSoulShards CONFIG = JsonUtil.fromJson(TypeToken.get(ConfigSoulShards.class), new File(FMLPaths.CONFIGDIR.get().toFile(), MODID + "/" + MODID + ".json"), new ConfigSoulShards());
@@ -39,16 +38,10 @@ public class SoulShards {
 
     public SoulShards() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStart);
     }
 
     @SubscribeEvent
     public void setupClient(FMLClientSetupEvent event) {
         SoulShardsClient.initClient();
-    }
-
-    @SubscribeEvent
-    public void serverStart(FMLServerStartingEvent event) {
-//        event.registerServerCommand(new CommandSoulShards());
     }
 }

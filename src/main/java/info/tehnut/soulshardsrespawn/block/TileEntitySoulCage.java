@@ -31,7 +31,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class TileEntitySoulCage extends TileEntity implements ITickableTileEntity {
 
