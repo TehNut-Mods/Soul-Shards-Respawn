@@ -1,4 +1,19 @@
 ------------------------------------------------------
+Version 1.2.0
+------------------------------------------------------
+
+- Updated to 1.15.2
+- Changed modid to "soulshards" to match the Fabric version
+    - This will allow data/resource packs to work across both versions
+    - The display name is still Soul Shards Respawn.
+- Temporarily removed commands
+    - I'm too lazy to rewrite them for Brigadier
+- Temporarily removed support for editing the structure (and catalyst) required
+- Optimizations
+    - Changed behavior of Soul Cage not constantly notify the world that it's inactive, it will now only do so as needed
+    - Changed serialization of Binding objects to use MC's provided UUID (de)serializers
+
+------------------------------------------------------
 Version 1.1.1
 ------------------------------------------------------
 

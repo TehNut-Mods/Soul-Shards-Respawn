@@ -81,7 +81,7 @@ apply from: "gradle/process_mod_info.gradle"
 jar {
     from sourceSets.main.output
     manifest {
-        attributes(["Specification-Title": "SoulShardsRespawn",
+        attributes(["Specification-Title": project.version,
                     "Specification-Vendor": "TehNut",
                     "Specification-Version": "1", // We are version 1 of ourselves
                     "Implementation-Title": project.name,
@@ -161,6 +161,8 @@ curseforge {
         id = "${curse_id}"
         changelog = getChangelogText()
         releaseType = 'release'
+
+        addGameVersion "Forge"
 
         addGameVersion "1.15"
         addGameVersion "1.15.1"
