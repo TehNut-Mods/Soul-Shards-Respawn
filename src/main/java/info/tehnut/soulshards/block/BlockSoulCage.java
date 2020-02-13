@@ -41,7 +41,7 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
         if (cage == null)
             return ActionResult.PASS;
 
-        ItemStack stack = cage.inventory.getInvStack(0);
+        ItemStack stack = cage.getInventory().getInvStack(0);
         if (stack.isEmpty())
             return ActionResult.PASS;
 
@@ -59,7 +59,7 @@ public class BlockSoulCage extends Block implements BlockEntityProvider {
         if (this.hasBlockEntity() && blockState.getBlock() != blockState2.getBlock()) {
             TileEntitySoulCage cage = (TileEntitySoulCage) world.getBlockEntity(blockPos);
             if (cage != null)
-                ItemScatterer.spawn(world.getWorld(), blockPos, cage.inventory);
+                ItemScatterer.spawn(world.getWorld(), blockPos, cage.getInventory());
         }
 
         super.onBlockRemoved(blockState, world, blockPos, blockState2, boolean_1);

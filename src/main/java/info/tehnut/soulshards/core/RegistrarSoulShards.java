@@ -31,7 +31,7 @@ public class RegistrarSoulShards {
 
     public static void registerBlocks(Registry<Block> registry) {
         Registry.register(registry, new Identifier(SoulShards.MODID, "soul_cage"), SOUL_CAGE);
-        Registry.register(Registry.BLOCK_ENTITY, new Identifier(SoulShards.MODID, "soul_cage"), SOUL_CAGE_TE);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(SoulShards.MODID, "soul_cage"), SOUL_CAGE_TE);
     }
 
     public static void registerItems(Registry<Item> registry) {
