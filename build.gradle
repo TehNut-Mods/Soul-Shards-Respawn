@@ -33,8 +33,9 @@ archivesBaseName = mod_name
 version = "${mc_version}-${mod_version}-${build_number}"
 
 repositories {
-    maven { url "https://tehnut.info/maven/" }
+    //maven { url "https://maven.tehnut.info" }
     maven { url "http://dvs1.progwml6.com/files/maven/" }
+    maven { url "https://github.com/TehNut/temporary-maven-thing/raw/master/maven/" }
 }
 
 dependencies {
