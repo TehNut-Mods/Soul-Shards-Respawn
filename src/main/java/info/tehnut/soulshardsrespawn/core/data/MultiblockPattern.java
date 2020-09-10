@@ -158,6 +158,7 @@ public class MultiblockPattern {
                         if (property != null)
                             returnState = returnState.withProperty(property, (Comparable) property.parseValue(valueSplit[1]).get());
                     }
+                    states.add(returnState);
                 } else {
                     states.addAll(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(state)).getBlockState().getValidStates());
                 }
