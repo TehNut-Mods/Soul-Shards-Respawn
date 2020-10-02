@@ -1,0 +1,40 @@
+{
+  "itemGroup.soulshards": "Soul Shards Respawn",
+
+  "item.soulshards.soul_shard": "Fragmento de Alma",
+  "item.soulshards.soul_shard_unbound": "Fragmento de Alma Desconectado",
+  "item.soulshards.corrupted_ingot": "Barra Corrompida",
+  "item.soulshards.corrupted_essence": "Essência Corrompida",
+  "item.soulshards.vile_dust": "Pó Vil",
+  "item.soulshards.vile_sword": "Espada Vil",
+
+  "block.soulshards.soul_cage": "Gaiola de Alma",
+
+  "tooltip.soulshards.bound": "Ligado à: %s",
+  "tooltip.soulshards.kills": "Almas: %d",
+  "tooltip.soulshards.tier": "Nível: %d",
+  "tooltip.soulshards.owner": "Dono: %s",
+  "tooltip.soulshards.cage_born": "Nascido da Gaiola",
+
+  "enchantment.soulshards.soul_stealer": "Rouba-Alma",
+
+  "chat.soulshards.absorb_disabled": "§cO fragmento parece recusar a alma...",
+  "chat.soulshards.command_killed": "§2%d entidades mortas",
+  "chat.soulshards.command_not_found": "§cNenhuma entidade spawnada foi encontrada",
+
+  "commands.soulshards.usage": "/soulshards [setEnt|setKills|setOwner|killall]",
+  "commands.soulshards.set_ent.usage": "/soulshards setEnt <entityId>",
+  "commands.soulshards.set_ent.success": "Altera a entidade ligada ao fragmento na sua mão para %s.",
+  "commands.soulshards.set_kills.usage": "/soulshards setKills <killCount>",
+  "commands.soulshards.set_kills.success": "Altera o número de mortes do fragmento na sua mão para %d.",
+  "commands.soulshards.set_owner.usage": "/soulshards setOwner [owner]",
+  "commands.soulshards.set_owner.success": "Altera o dono do fragmento na sua mão para %s.",
+  "commands.soulshards.kill_all.usage": "/soulshards killall",
+  "commands.soulshards.kill_all.success": "Matando %d entidades nascidas das Gaiolas.",
+  "commands.soulshards.error.not_a_shard": "O item na sua mão não é um fragmento.",
+  "commands.soulshards.error.not_a_entity": "%s é inválido ou não está registrado.",
+
+  "enchantment.soulshards.soul_stealer.desc": "Aumenta as almas coletadas por morte em +1 por nível.",
+
+  "jei.soulshards.soul_shard.desc": "Um recipiente para as almas dos mortos.\\n\\nObtida criando uma estrutura no mundo e usando %s no bloco principal."
+}
