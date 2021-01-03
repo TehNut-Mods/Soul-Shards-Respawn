@@ -7,6 +7,6 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 public class SoulShardsClient {
 
     public static void initClient() {
-        RenderTypeLookup.setRenderLayer(RegistrarSoulShards.SOUL_CAGE, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(RegistrarSoulShards.SOUL_CAGE, RenderType.getCutout());
     }
 }

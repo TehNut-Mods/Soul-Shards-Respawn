@@ -21,7 +21,7 @@ group = "mcp.mobius.waila"
 archivesBaseName = "SoulShardsRespawn-forge"
 
 minecraft {
-    mappings channel: "snapshot", version: "20200125-1.15.1"
+    mappings channel: 'snapshot', version: '20201028-1.16.3'
 
     runs {
         client {
@@ -65,7 +65,7 @@ processResources {
 }
 
 repositories {
-    maven { url "https://tehnut.info/maven" }
+    maven { url 'https://maven.tehnut.info' }
 }
 
 dependencies {
@@ -164,9 +164,7 @@ curseforge {
 
         addGameVersion "Forge"
 
-        addGameVersion "1.15"
-        addGameVersion "1.15.1"
-        addGameVersion "1.15.2"
+        addGameVersion "1.16.4"
 
         addArtifact sourcesJar
         addArtifact apiJar

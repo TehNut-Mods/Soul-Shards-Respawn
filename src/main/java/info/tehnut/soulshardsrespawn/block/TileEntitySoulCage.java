@@ -22,6 +22,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.LightType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -99,17 +100,16 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
                 entityLiving.getPersistentData().putBoolean("cageBorn", true);
                 entityLiving.forceSpawn = true;
 
-                if (entityLiving.isAlive() && !hasReachedSpawnCap(entityLiving) && getWorld().func_226668_i_(entityLiving)) { // func_226668_i_ -> checkNoEntityCollision
+                if (entityLiving.isAlive() && !hasReachedSpawnCap(entityLiving) && getWorld().checkNoEntityCollision(entityLiving)) {
                     if (!SoulShards.CONFIG.getBalance().allowBossSpawns() && !entityLiving.isNonBoss())
                         continue;
 
                     CageSpawnEvent event = new CageSpawnEvent(binding, inventory.getStackInSlot(0), entityLiving);
                     if (MinecraftForge.EVENT_BUS.post(event))
                         continue;
-
                     getWorld().addEntity(entityLiving);
                     if (entityLiving instanceof MobEntity)
-                        ((MobEntity) entityLiving).onInitialSpawn(getWorld(), getWorld().getDifficultyForLocation(spawnAt), SpawnReason.SPAWNER, null, null);
+                        ((MobEntity) entityLiving).onInitialSpawn((ServerWorld) world, getWorld().getDifficultyForLocation(spawnAt), SpawnReason.SPAWNER, null, null);
                     break;
                 }
             }
@@ -173,8 +173,8 @@ public class TileEntitySoulCage extends TileEntity implements ITickableTileEntit
     }
 
     @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
+    public void read(BlockState state, CompoundNBT tag) {
+        super.read(state, tag);
 
         this.inventory.deserializeNBT(tag.getCompound("inventory"));
         this.activeTime = tag.getInt("activeTime");

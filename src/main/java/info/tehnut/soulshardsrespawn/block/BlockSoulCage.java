@@ -108,7 +108,6 @@ public class BlockSoulCage extends Block {
         return (int) (((double) binding.getTier().getIndex() / ((double) Tier.INDEXED.size() - 1)) * 15D);
     }
 
-    @Override
     public boolean causesSuffocation(BlockState state, IBlockReader reader, BlockPos pos) {
         return false;
     }

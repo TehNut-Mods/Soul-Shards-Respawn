@@ -13,11 +13,14 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -41,15 +44,6 @@ public class ItemSoulShard extends Item implements ISoulShard {
 
     public ItemSoulShard() {
         super(new Properties().group(SoulShards.TAB_SS));
-
-        addPropertyOverride(new ResourceLocation(SoulShards.MODID, "bound"), (stack, worldIn, entityIn) -> getBinding(stack) != null ? 1.0F : 0.0F);
-        addPropertyOverride(new ResourceLocation(SoulShards.MODID, "tier"), (stack, world, entity) -> {
-            Binding binding = getBinding(stack);
-            if (binding == null)
-                return 0F;
-
-            return Float.parseFloat("0." + Tier.INDEXED.indexOf(binding.getTier()));
-        });
     }
 
     @Override
@@ -184,6 +178,14 @@ public class ItemSoulShard extends Item implements ISoulShard {
     @Override
     public Binding getBinding(ItemStack stack) {
         return Binding.fromNBT(stack);
+    }
+
+    public float getBindingFloatValue(ItemStack stack) {
+        Binding binding = getBinding(stack);
+        if(binding == null) {
+            return 0F;
+        }
+        return Float.parseFloat("0." + Tier.INDEXED.indexOf(binding.getTier()));
     }
 
     public void updateBinding(ItemStack stack, Binding binding) {
