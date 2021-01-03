@@ -1,8 +1,9 @@
 {
   "modLoader": "javafml",
-  "loaderVersion": "[26,)",
+  "loaderVersion": "[34,)",
   "issueTrackerURL": "https://github.com/TehNut/Soul-Shards-Respawn/issues",
   "displayURL": "https://github.com/TehNut/Soul-Shards-Respawn",
+  "license": "MIT License (https://github.com/TehNut/Soul-Shards-Respawn/blob/1.15_forge/LICENSE.md)"
   "authors": "TehNut",
   "mods": [
     {
@@ -17,14 +18,14 @@
       {
         "modId": "forge",
         "mandatory": false,
-        "versionRange": "[31,)",
+        "versionRange": "[34,)",
         "ordering": "NONE",
         "side": "BOTH"
       },
       {
         "modId": "minecraft",
         "mandatory": true,
-        "versionRange": "[1.15,)",
+        "versionRange": "[1.16.4,)",
         "ordering": "NONE",
         "side": "BOTH"
       }

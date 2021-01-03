@@ -8,7 +8,9 @@ import info.tehnut.soulshardsrespawn.core.data.Tier;
 import info.tehnut.soulshardsrespawn.core.util.JsonUtil;
 import info.tehnut.soulshardsrespawn.item.ItemSoulShard;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,5 +45,14 @@ public class SoulShards {
     @SubscribeEvent
     public void setupClient(FMLClientSetupEvent event) {
         SoulShardsClient.initClient();
+        event.enqueueWork(this::registerPropertyOverride);
+    }
+
+    private void registerPropertyOverride() {
+        ItemSoulShard item = new ItemSoulShard();
+        ItemModelsProperties.registerProperty(item, new ResourceLocation(SoulShards.MODID, "bound"),
+                (stack, worldIn, entityIn) -> item.getBinding(stack) != null ? 1.0F : 0.0F);
+        ItemModelsProperties.registerProperty(item, new ResourceLocation(SoulShards.MODID, "tier"),
+                (stack, worldIn, entityIn) -> item.getBindingFloatValue(stack));
     }
 }

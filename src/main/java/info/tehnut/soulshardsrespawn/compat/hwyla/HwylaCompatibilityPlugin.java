@@ -2,11 +2,20 @@ package info.tehnut.soulshardsrespawn.compat.hwyla;
 
 import info.tehnut.soulshardsrespawn.block.TileEntitySoulCage;
 import info.tehnut.soulshardsrespawn.core.data.Binding;
-import mcp.mobius.waila.api.*;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IEntityAccessor;
+import mcp.mobius.waila.api.IEntityComponentProvider;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IRegistrar;
+import mcp.mobius.waila.api.IWailaPlugin;
+import mcp.mobius.waila.api.TooltipPosition;
+import mcp.mobius.waila.api.WailaPlugin;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -48,7 +57,7 @@ public class HwylaCompatibilityPlugin implements IWailaPlugin {
                     if (entityEntry != null)
                         tooltip.add(new TranslationTextComponent("tooltip.soulshards.bound", entityEntry.getName()));
                     else
-                        tooltip.add(new TranslationTextComponent("tooltip.soulshards.bound", binding.getBoundEntity().toString()).setStyle(new Style().setColor(TextFormatting.RED)));
+                        tooltip.add(new TranslationTextComponent("tooltip.soulshards.bound", binding.getBoundEntity().toString()).setStyle(Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.RED))));
                 }
 
                 tooltip.add(new TranslationTextComponent("tooltip.soulshards.tier", binding.getTier().getIndex()));

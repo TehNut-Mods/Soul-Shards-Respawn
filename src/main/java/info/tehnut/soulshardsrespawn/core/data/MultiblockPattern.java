@@ -9,7 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -153,9 +153,9 @@ public class MultiblockPattern {
                     String[] stateValues = split[1].split(","); // Splits up each value
                     for (String value : stateValues) {
                         String[] valueSplit = value.split("=");
-                        IProperty property = blockState.getProperty(valueSplit[0]);
-                        if (property != null)
-                            returnState = returnState.with(property, (Comparable) property.parseValue(valueSplit[1]).get());
+                        Property prop = blockState.getProperty(valueSplit[0]);
+                        if (prop != null && prop.parseValue(valueSplit[1]).isPresent())
+                            returnState = returnState.with(prop, (Comparable) prop.parseValue(valueSplit[1]).get());
                     }
                 } else {
                     states.addAll(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(state)).getStateContainer().getValidStates());
